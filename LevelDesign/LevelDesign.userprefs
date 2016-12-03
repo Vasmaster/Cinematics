@@ -1,0 +1,18 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Enemy\EnemyMelee.cs">
+    <Files>
+      <File FileName="Assets\Scripts\Enemy\EnemyMelee.cs" Line="153" Column="2" />
+      <File FileName="Assets\Scripts\UI\GameInteraction.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Enemy\EnemyRanged.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Player\Player.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Enemy\EnemyMeleeTrigger.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="D:\Saxion\2016-2017\ALGEMEEN\LevelDesign\Assets\Scripts\Enemy\EnemyMelee.cs" line="42" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

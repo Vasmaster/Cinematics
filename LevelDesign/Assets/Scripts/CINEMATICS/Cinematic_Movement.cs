@@ -46,23 +46,26 @@ public class Cinematic_Movement : MonoBehaviour
         _allNodes = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => go.name).ToArray();
         for (int i = 0; i < _allNodes.Length; i++)
         {
-            if(!_allNodes[i].GetComponent<NodeObject>().ReturnComplete())
+            if (_allNodes[i].GetComponent<NodeObject>().ReturnCharID() == CharacterID)
             {
-                if(_allNodes[i].GetComponent<NodeObject>().ReturnAnim() == "Start")
+                if (!_allNodes[i].GetComponent<NodeObject>().ReturnComplete())
                 {
-                    Debug.Log("STARTING THE SEQUENCE");
-                    _allNodes[i].GetComponent<NodeObject>().SetComplete();
-                    transform.position = _allNodes[i].GetComponent<NodeObject>().ReturnWayPoint().transform.position;
-                    _activeNode = _allNodes[i].GetComponent<NodeObject>().ReturnOutputID();
-                    _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
+                    if (_allNodes[i].GetComponent<NodeObject>().ReturnAnim() == "Start")
+                    {
+                        Debug.Log("STARTING THE SEQUENCE");
+                        _allNodes[i].GetComponent<NodeObject>().SetComplete();
+                        transform.position = _allNodes[i].GetComponent<NodeObject>().ReturnWayPoint().transform.position;
+                        _activeNode = _allNodes[i].GetComponent<NodeObject>().ReturnOutputID();
+                        _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
 
-                    
+
+
+                    }
+                }
+                else
+                {
 
                 }
-            }
-            else
-            {
-
             }
         }       
 
@@ -70,46 +73,50 @@ public class Cinematic_Movement : MonoBehaviour
 
     public void Update()
     {
-        if (_allNodes.Length > 0)
+        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCharID() == CharacterID)
         {
-            if (_allNodes[_activeNode] != null)
+            if (_allNodes.Length > 0)
             {
-                if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnActive())
+                if (_allNodes[_activeNode] != null)
                 {
-                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Walk")
+                
+                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnActive())
                     {
-                        _wayPoint = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnWayPoint();
+                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Walk")
+                        {
+                            _wayPoint = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnWayPoint();
 
-                        _isWalking = true;
-                    }
+                            _isWalking = true;
+                        }
 
-                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Run")
-                    {
-                        _wayPoint = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnWayPoint();
+                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Run")
+                        {
+                            _wayPoint = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnWayPoint();
 
-                        _isRunning = true;
-                    }
+                            _isRunning = true;
+                        }
 
-                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Idle")
-                    {
-                        _isIdle = true;
-                    }
-                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "CombatIdle")
-                    {
-                        _isCombatIdle = true;
-                    }
+                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Idle")
+                        {
+                            _isIdle = true;
+                        }
+                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "CombatIdle")
+                        {
+                            _isCombatIdle = true;
+                        }
 
-                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Start")
-                    {
-                        _isIdle = true;
-                    }
-                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Ranged")
-                    {
-                        _isRanged = true;
-                    }
-                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Melee")
-                    {
-                        _isMelee = true;
+                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Start")
+                        {
+                            _isIdle = true;
+                        }
+                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Ranged")
+                        {
+                            _isRanged = true;
+                        }
+                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Melee")
+                        {
+                            _isMelee = true;
+                        }
                     }
                 }
             }

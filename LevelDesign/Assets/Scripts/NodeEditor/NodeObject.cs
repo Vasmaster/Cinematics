@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NodeObject : MonoBehaviour {
+public class NodeObject : MonoBehaviour
+{
+
+    [SerializeField]
+    private int _charID;
 
     [SerializeField]
     private int _nodeID;
@@ -137,7 +141,7 @@ public class NodeObject : MonoBehaviour {
         return _isActive;
     }
 
-   
+
 
     public float ReturnIdleWait()
     {
@@ -172,5 +176,17 @@ public class NodeObject : MonoBehaviour {
     public AudioClip ReturnAudio()
     {
         return _audio;
+    }
+
+    public void SetCharID(int _id)
+    {
+
+        _charID = _id;
+
+    }
+
+    public int ReturnCharID()
+    {
+        return _charID;
     }
 }

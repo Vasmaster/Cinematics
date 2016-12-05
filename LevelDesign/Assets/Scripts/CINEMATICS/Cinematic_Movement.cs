@@ -32,6 +32,8 @@ public class Cinematic_Movement : MonoBehaviour
     private AudioSource _soundManager;
     private bool _isPlaying;
 
+    public int CharacterID;
+
     public void Start()
     {
 

@@ -5,6 +5,11 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Linq;
 
+
+
+//  Create a enum
+// We say " Zero = 0"  because we want to use an integer for the character ID
+
 public enum CharacterList
 {
     Zero = 0,
@@ -262,6 +267,7 @@ public class NodeEditor : EditorWindow {
                         windows.Add(rangedNode);
                         allGO.Add(_sceneGO[i]);
 
+                    
                         rangedNode.SetID(nodeCounter);
                         nodeID.Add(nodeCounter);
                         nodeCounter++;
@@ -271,12 +277,18 @@ public class NodeEditor : EditorWindow {
 
         }
 
-        // We try to redraw the existing connections between nodes
-        // if the _sceneGO is not empty AND there is at least 1 node in the windows list
-        //      Go through all the objects
-        //      Safety check to see if the specific _sceneGO object is not null
-        //      If the outputID is greater than 0 ( else we get a circle since the curve will be drawn back to its origin
-        //      Draw the curve from the current window to the window that is stated in the outputID from the NodeObject attached to itself
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                                                                                                                          //
+        // We try to redraw the existing connections between nodes                                                                                  //
+        // if the _sceneGO is not empty AND there is at least 1 node in the windows list                                                            //
+        //      Go through all the objects                                                                                                          //
+        //      Safety check to see if the specific _sceneGO object is not null                                                                     //
+        //      If the outputID is greater than 0 ( else we get a circle since the curve will be drawn back to its origin                           //
+        //      Draw the curve from the current window to the window that is stated in the outputID from the NodeObject attached to itself          //
+        //                                                                                                                                          //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
         if (_sceneGO != null && windows.Count > 0)
         {
@@ -286,16 +298,34 @@ public class NodeEditor : EditorWindow {
                 {
                     if (_sceneGO[j].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
                     {
+
                         if (_sceneGO[j].GetComponent<NodeObject>().ReturnOutputID() > 0)
                         {
-                            DrawNodeCurve(windows[j].windowRect, windows[_sceneGO[j].GetComponent<NodeObject>().ReturnOutputID()].windowRect);
-                            Repaint();
+
+                                if (windows[_sceneGO[j].GetComponent<NodeObject>().ReturnOutputID()] != null && _sceneGO[j].GetComponent<NodeObject>().ReturnOutputID() > 0)
+                                {
+                                    DrawNodeCurve(windows[j].windowRect, windows[_sceneGO[j].GetComponent<NodeObject>().ReturnOutputID()].windowRect);
+                                    Repaint();
+                                break;
+                                }
+                                else
+                                {
+
+                                }
+                           // }
+                        }
+                        else
+                        {
+                           // Debug.Log("There is a node that no longer exists so we shall skip it");
                         }
                     }
                 }
                 else
                 {
+
+                    // Error catching
                     Debug.Log("the array _sceneGO is empty");
+
                 }
             }
         }
@@ -365,18 +395,9 @@ public class NodeEditor : EditorWindow {
                 {
                     GenericMenu menu = new GenericMenu();
 
-                    //     menu.AddItem(new GUIContent("Add Input Node"), false, ContextCallback, "inputNode");
-                    //menu.AddItem(new GUIContent("Add Output Node"), false, ContextCallback, "outputNode");
-                    //     menu.AddItem(new GUIContent("Add Calculation Node"), false, ContextCallback, "calcNode");
-                    //     menu.AddItem(new GUIContent("Add Comparison Node"), false, ContextCallback, "compNode");
-                    //     menu.AddSeparator(" ");
-                    //     menu.AddItem(new GUIContent("Add GameObject Node"), false, ContextCallback, "goActive");
-                    //     menu.AddItem(new GUIContent("Add Distance Node"), false, ContextCallback, "goDistance");
-                    //     menu.AddItem(new GUIContent("Add Timer Node"), false, ContextCallback, "timerNode");
-                    //     menu.AddSeparator(" ");
+                
                     menu.AddDisabledItem(new GUIContent("[ Cinematics ]"));
                     menu.AddItem(new GUIContent("Add Animation Start Node"), false, ContextCallback, "animStartNode");
-                    //  menu.AddItem(new GUIContent("Add Animation Node"), false, ContextCallback, "animNode");
                     menu.AddItem(new GUIContent("Add Idle Node"), false, ContextCallback, "idleNode");
                     menu.AddItem(new GUIContent("Add Walk To Node"), false, ContextCallback, "walkNode");
                     menu.AddItem(new GUIContent("Add Run To Node"), false, ContextCallback, "runNode");
@@ -437,13 +458,16 @@ public class NodeEditor : EditorWindow {
 
                 // Set the input in the TO node
                 windows[selectIndex].SetInput((BaseInputNode)selectedNode, mousePos);
-                //Debug.Log("From node: " + selectedNode + " to: " + windows[selectIndex]);
+                Debug.Log("From node: " + selectedNode + " to: " + windows[selectIndex]);
                 //Debug.Log(selectedNode.ReturnID());
                 //Debug.Log(windows[selectIndex].ReturnID());
 
                 // In our FROM node we set the outputID from the TO node
-                allGO[selectedNode.ReturnID()].GetComponent<NodeObject>().setOutputID(windows[selectIndex].ReturnID());
 
+                if (allGO[selectedNode.ReturnID()] != null)
+                {
+                    allGO[selectedNode.ReturnID()].GetComponent<NodeObject>().setOutputID(windows[selectIndex].ReturnID());
+                }
 
                 makeTransitionMode = false;
                 selectedNode = null;
@@ -509,9 +533,12 @@ public class NodeEditor : EditorWindow {
 
         for (int i = 0; i < windows.Count; i++)
         {
-            if (allGO[i].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
+            if (allGO[i] != null)
             {
-                windows[i].windowRect = GUI.Window(i, windows[i].windowRect, DrawNodeWindow, windows[i].windowTitle);
+                if (allGO[i].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
+                {
+                    windows[i].windowRect = GUI.Window(i, windows[i].windowRect, DrawNodeWindow, windows[i].windowTitle);
+                }
             }
         }
 
@@ -630,7 +657,7 @@ public class NodeEditor : EditorWindow {
                 newNode.AddComponent<NodeObject>();
                 newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
                 newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
-                 inputNode.SetID(nodeCounter);
+                inputNode.SetID(nodeCounter);
 
             // make it a child of "Node"
             newNode.transform.parent = _parent.transform;
@@ -710,7 +737,7 @@ public class NodeEditor : EditorWindow {
                 newNode.AddComponent<NodeObject>();
                 newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
                 newNode.GetComponent<NodeObject>().setTitle(compNode.windowTitle);
-            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
+                newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
 
             compNode.SetID(nodeCounter);
 
@@ -1063,27 +1090,48 @@ public class NodeEditor : EditorWindow {
 
                 
                 BaseNode selNode = windows[selectIndex];
-                DestroyImmediate(allGO[selectIndex].gameObject);
+                
                 windows.RemoveAt(selectIndex);
+                DestroyImmediate(allGO[selectIndex].gameObject);
+                Debug.Log("Removed windows " + selectIndex);
 
                 nodeID.RemoveAt(selectIndex);
 
-                
+                                
                 allGO.RemoveAt(selectIndex);
+               
 
-                for (int i = 0; i < _sceneGO.Length; i++)
-                {
-                    if(_sceneGO[i].GetComponent<NodeObject>().ReturnOutputID() == selectIndex)
-                    {
-                        _sceneGO[i].GetComponent<NodeObject>().setOutputID(0);
-                    }
 
-                }
-
-                foreach(BaseNode n in windows)
+                foreach (BaseNode n in windows)
                 {
                     n.NodeDeleted(selNode);
                 }
+
+
+                
+                for (int i = 0; i < allGO.Count; i++)
+                {
+                   
+                    if (allGO[i] != null && allGO[i].GetComponent<NodeObject>().ReturnOutputID() == selectIndex)
+                    {
+                        allGO[i].GetComponent<NodeObject>().setOutputID(0);
+                    }
+
+                    if (allGO[i] != null && allGO[i].GetComponent<NodeObject>().ReturnNodeID() > selectIndex)
+                    {
+                        if (allGO[i].GetComponent<NodeObject>().ReturnOutputID() != 0)
+                        {
+                            allGO[i].GetComponent<NodeObject>().setOutputID(-1);
+                        }
+                        allGO[i].GetComponent<NodeObject>().SetName(-1);
+                        allGO[i].GetComponent<NodeObject>().setNodeID(-1);
+                        windows[selectIndex].SetID(-1);
+                    }
+                    //Debug.Log(allGO[i].GetComponent<NodeObject>().ReturnNodeID());
+                }
+
+                nodeCounter--;
+                
             }
         }
     }

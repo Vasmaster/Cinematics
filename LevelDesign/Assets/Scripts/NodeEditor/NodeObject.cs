@@ -46,7 +46,15 @@ public class NodeObject : MonoBehaviour
 
     public void setNodeID(int _id)
     {
-        _nodeID = _id;
+        
+        if (_id < 0)
+        {
+            Debug.Log("Setting node id");
+            _nodeID += _id;
+        }
+        else {
+            _nodeID = _id;
+        }
     }
 
     public void setInputID(int _id)
@@ -56,7 +64,14 @@ public class NodeObject : MonoBehaviour
 
     public void setOutputID(int _id)
     {
-        _outputID = _id;
+        if (_id < 0 && _outputID > 0)
+        {
+            Debug.Log("Setting output ID");
+            _outputID += _id;
+        }
+        else {
+            _outputID = _id;
+        }
     }
 
     public void setAnimation(string _animation)
@@ -188,5 +203,16 @@ public class NodeObject : MonoBehaviour
     public int ReturnCharID()
     {
         return _charID;
+    }
+
+    public void SetName(int _id)
+    {
+        this.name = "Node" + (_nodeID - 1);
+        Debug.Log(this.name);
+    }
+
+    public int ReturnNodeID()
+    {
+        return _nodeID;
     }
 }

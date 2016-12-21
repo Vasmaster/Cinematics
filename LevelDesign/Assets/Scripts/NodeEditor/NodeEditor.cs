@@ -1047,6 +1047,32 @@ public class NodeEditor : EditorWindow {
 
         }
 
+        else if (clb.Equals("soundtrackNode"))
+        {
+            SoundTrackNode soundNode = new SoundTrackNode();
+            soundNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
+
+            windows.Add(soundNode);
+
+            GameObject newNode = new GameObject();
+
+            newNode.AddComponent<NodeObject>();
+            newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
+            newNode.GetComponent<NodeObject>().setTitle(soundNode.windowTitle);
+            
+            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
+            newNode.GetComponent<NodeObject>().SetCharID((int)_charSelect);
+
+            soundNode.SetID(nodeCounter);
+
+            newNode.transform.parent = _parent.transform;
+            newNode.name = "Node" + nodeCounter;
+            newNode.tag = "Node";
+            nodeID.Add(nodeCounter);
+            allGO.Add(newNode);
+            nodeCounter++;
+        }
+
         else if(clb.Equals("makeTransition"))
         {
             bool clickedOnWindow = false;

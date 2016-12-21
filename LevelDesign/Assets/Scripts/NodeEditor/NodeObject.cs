@@ -44,6 +44,9 @@ public class NodeObject : MonoBehaviour
     [SerializeField]
     private AudioClip _audio;
 
+    [SerializeField]
+    private bool _autoPlay;
+
     public void setNodeID(int _id)
     {
         
@@ -215,4 +218,15 @@ public class NodeObject : MonoBehaviour
     {
         return _nodeID;
     }
+
+    public void AutoPlay(bool _play)
+    {
+        _autoPlay = _play;
+    }
+
+    public bool ReturnAutoPlay()
+    {
+        return _autoPlay;
+    }
+
 }

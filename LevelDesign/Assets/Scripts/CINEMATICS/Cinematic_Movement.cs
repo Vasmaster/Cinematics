@@ -9,8 +9,10 @@ using System.Linq;
 public class Cinematic_Movement : MonoBehaviour
 {
 
+    // Store all the current nodes in the scenes
     private GameObject[] _allNodes;
 
+    // Animation states
     private bool _isWalking = false;
     private bool _isIdle = false;
     private bool _isRunning = false;
@@ -18,6 +20,16 @@ public class Cinematic_Movement : MonoBehaviour
     private bool _setOnce = false;
     private bool _isRanged = false;
     private bool _isMelee = false;
+
+    // If there is a custom animation
+    private bool _isCustom = false;
+
+    // which custom animation
+    private bool _isCustomIdle = false;
+    private bool _isCustomWalk = false;
+    private bool _isCustomRun = false;
+    private bool _isCustomRanged = false;
+    private bool _isCustomGesture = false;
 
     private GameObject _wayPoint;
 
@@ -58,8 +70,20 @@ public class Cinematic_Movement : MonoBehaviour
                         _activeNode = _allNodes[i].GetComponent<NodeObject>().ReturnOutputID();
                         _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
 
+                    }
+                    if(_allNodes[i].GetComponent<NodeObject>().ReturnAutoPlay())
+                    {
+                        _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
 
-
+                        _soundManager.Play();
+                        if (!_soundManager.isPlaying)
+                        {
+                            _isPlaying = false;
+                        }
+                        else
+                        {
+                            _isPlaying = true;
+                        }
                     }
                 }
                 else
@@ -117,6 +141,38 @@ public class Cinematic_Movement : MonoBehaviour
                         {
                             _isMelee = true;
                         }
+
+
+                        //////////////////////////////////////////////////////
+                        //                  CUSTOM NODES                    //
+                        //////////////////////////////////////////////////////
+
+
+                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "CustomNode")
+                        {
+                            if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnimType() == "Idle")
+                            {
+                                _isCustomIdle = true;
+                            }
+                            else if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnimType() == "Walk")
+                            {
+                                _isCustomWalk = true;
+                            }
+                            else if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnimType() == "Run")
+                            {
+                                _isCustomRun = true;
+                            }
+                            else if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnimType() == "Ranged")
+                            {
+                                _isCustomRanged = true;
+                            }
+                            else if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnimType() == "Gesture")
+                            {
+                                _isCustomGesture = true;
+                            }
+
+                            _isCustom = true;
+                        }
                     }
                 }
             }
@@ -156,6 +212,14 @@ public class Cinematic_Movement : MonoBehaviour
                 _animator.SetBool("isMelee", true);
 
                 Melee();
+            }
+            if(_isCustom)
+            {
+                if(_isCustomWalk)
+                {
+                    CustomWalk();
+                }
+                
             }
         }
     }
@@ -489,5 +553,69 @@ public class Cinematic_Movement : MonoBehaviour
     {
 
     }
- 
+
+
+
+    void CustomWalk()
+    {
+        _animator.Play(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnim().ToString());
+        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio() != null)
+        {
+            if (!_isPlaying)
+            {
+                Debug.Log(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio());
+                _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
+
+                _soundManager.Play();
+                if (!_soundManager.isPlaying)
+                {
+                    _isPlaying = false;
+                }
+                else
+                {
+                    _isPlaying = true;
+                }
+
+            }
+        }
+
+        Vector3 _dir = _wayPoint.transform.position - transform.position;                                    // get the Vector we are going to move to
+        _dir.y = 0f;                                                                    // we dont want to move up
+        Quaternion _targetRot = Quaternion.LookRotation(_dir);                          // get the rotation in which we should look at
+        transform.rotation = _targetRot;                                                // rotate the player
+
+        Vector3 _forward = transform.TransformDirection(Vector3.forward);               // create a forward Vector3
+
+        if (_dir.magnitude > 0.1f)
+        {                                                    // if the magnitude of the vector is greater than
+            _playerMovement.SimpleMove(_forward * 2.65f);        // move the actual player
+
+        }
+        else
+        {
+            _allNodes[_activeNode].GetComponent<NodeObject>().SetComplete();
+            _allNodes[_activeNode].GetComponent<NodeObject>().SetInActive();
+            _activeNode = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnOutputID();
+            if (_allNodes[_activeNode] != null)
+            {
+                _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
+            }
+
+            if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() != "Idle")
+            {
+
+                _animator.SetBool("skipIdle", true);
+
+            }
+
+
+
+            _isCustomWalk = false;
+            //_animator.SetBool("isWalking", false);
+        }
+
+
+
+    }
+
 }

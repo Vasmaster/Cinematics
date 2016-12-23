@@ -92,21 +92,21 @@ public class NodeEditor : EditorWindow {
 
         _charSelect = (CharacterList)EditorGUILayout.EnumPopup("CharacterID", _charSelect);
 
-        ////////////////////////////////////////////////////////////////////////////////////
-        //
-        //                                  LOADING FROM THE SCENE
-        //
-        // We check to see if there are any gameobjects in the scene with the tag 'Node'
-        // If there are we:
-        //              Create a new Node based on the animation type ( ReturnAnim() )
-        //              Draw a new Rect and place it at the positions we get from the NodeObject component
-        //              Set the WayPoint ( GameObject )
-        //              We add the node to the windows List
-        //              We add the current GameObject from the scene in our allGO List
-        //              We set the nodeID which we get from nodeCounter var
-        //              We add the nodeID ( nodeCounter ) to the nodeID list
-        //              We add 1 to the nodeCounter
-        ////////////////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //                                                                                                                  //
+        //                                  LOADING FROM THE SCENE                                                          //
+        //                                                                                                                  //
+        // We check to see if there are any gameobjects in the scene with the tag 'Node'                                    //
+        // If there are we:                                                                                                 //
+        //              Create a new Node based on the animation type ( ReturnAnim() )                                      //
+        //              Draw a new Rect and place it at the positions we get from the NodeObject component                  //
+        //              Set the WayPoint ( GameObject )                                                                     //
+        //              We add the node to the windows List                                                                 //
+        //              We add the current GameObject from the scene in our allGO List                                      //
+        //              We set the nodeID which we get from nodeCounter var                                                 //
+        //              We add the nodeID ( nodeCounter ) to the nodeID list                                                //
+        //              We add 1 to the nodeCounter                                                                         //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         if (GUILayout.Button("Load from scene"))
         {
@@ -272,7 +272,31 @@ public class NodeEditor : EditorWindow {
                         nodeID.Add(nodeCounter);
                         nodeCounter++;
                     }
-               // }
+                    if (_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "SoundTrack")
+                    {
+                        SoundTrackNode soundtrackNode = new SoundTrackNode();
+                        soundtrackNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight);
+
+
+                        
+                        if (_sceneGO[i].GetComponent<NodeObject>().ReturnAudio() != null)
+                        {
+
+                            
+                            soundtrackNode.SetAudio(_sceneGO[i].GetComponent<NodeObject>().ReturnAudio());
+
+                        }
+
+
+                        windows.Add(soundtrackNode);
+                        allGO.Add(_sceneGO[i]);
+
+
+                        soundtrackNode.SetID(nodeCounter);
+                        nodeID.Add(nodeCounter);
+                        nodeCounter++;
+                    }
+                // }
             }
 
         }
@@ -1059,7 +1083,7 @@ public class NodeEditor : EditorWindow {
             newNode.AddComponent<NodeObject>();
             newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
             newNode.GetComponent<NodeObject>().setTitle(soundNode.windowTitle);
-            
+            newNode.GetComponent<NodeObject>().setAnimation("SoundTrack");
             newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
             newNode.GetComponent<NodeObject>().SetCharID((int)_charSelect);
 

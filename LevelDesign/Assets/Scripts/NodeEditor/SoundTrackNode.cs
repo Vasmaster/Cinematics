@@ -71,4 +71,9 @@ public class SoundTrackNode : BaseInputNode {
         }
     }
 
+    public void SetAudio(AudioClip _clip)
+    {
+        _soundSource = _clip;
+    }
+
 }

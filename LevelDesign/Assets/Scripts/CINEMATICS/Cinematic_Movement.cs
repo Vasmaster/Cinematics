@@ -288,6 +288,10 @@ public class Cinematic_Movement : MonoBehaviour
                 _animator.SetBool("skipIdle", true);
 
             }
+            if(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Idle")
+            {
+                _animator.SetBool("skipIdle", false);
+            }
 
 
 

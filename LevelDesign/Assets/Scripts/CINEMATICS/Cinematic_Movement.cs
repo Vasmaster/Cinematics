@@ -55,9 +55,13 @@ public class Cinematic_Movement : MonoBehaviour
 
         _soundManager = GetComponent<AudioSource>();
 
-        _allNodes = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => go.name).ToArray();
+        _allNodes = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => int.Parse(go.name.Substring(4))).ToArray();
+
+       // _allNodes = _allNodes(go => int.Parse(go.name.Substring(9))).ToArray();
         for (int i = 0; i < _allNodes.Length; i++)
         {
+
+            Debug.Log(_allNodes[i]);
             if (_allNodes[i].GetComponent<NodeObject>().ReturnCharID() == CharacterID)
             {
                 if (!_allNodes[i].GetComponent<NodeObject>().ReturnComplete())
@@ -97,8 +101,12 @@ public class Cinematic_Movement : MonoBehaviour
 
     public void Update()
     {
+        Debug.Log("Active NODE " + _allNodes[_activeNode]);
         if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCharID() == CharacterID)
         {
+
+           
+
             if (_allNodes.Length > 0)
             {
                 if (_allNodes[_activeNode] != null)
@@ -150,9 +158,11 @@ public class Cinematic_Movement : MonoBehaviour
 
                         if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "CustomNode")
                         {
+                            _isCustom = true;
                             if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnimType() == "Idle")
                             {
                                 _isCustomIdle = true;
+                                
                             }
                             else if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnimType() == "Walk")
                             {
@@ -171,7 +181,8 @@ public class Cinematic_Movement : MonoBehaviour
                                 _isCustomGesture = true;
                             }
 
-                            _isCustom = true;
+                            
+                            
                         }
                     }
                 }
@@ -219,6 +230,12 @@ public class Cinematic_Movement : MonoBehaviour
                 {
                     CustomWalk();
                 }
+                else if (_isCustomIdle)
+                {
+                    _animator.SetBool("isCustom", true);
+                    CustomIdle();
+                    
+                }
                 
             }
         }
@@ -263,7 +280,10 @@ public class Cinematic_Movement : MonoBehaviour
         Vector3 _dir = _wayPoint.transform.position - transform.position;                                    // get the Vector we are going to move to
         _dir.y = 0f;                                                                    // we dont want to move up
         Quaternion _targetRot = Quaternion.LookRotation(_dir);                          // get the rotation in which we should look at
-        transform.rotation = _targetRot;                                                // rotate the player
+
+        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRot, Time.time * 1f);
+
+        //transform.rotation = _targetRot;                                                // rotate the player
 
         Vector3 _forward = transform.TransformDirection(Vector3.forward);               // create a forward Vector3
 
@@ -305,9 +325,6 @@ public class Cinematic_Movement : MonoBehaviour
 
     public void Idle()
     {
-
-       
-        
         
         if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnIdleWait() > 0)
         {
@@ -351,6 +368,7 @@ public class Cinematic_Movement : MonoBehaviour
                 {
                     _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
                 }
+                _setOnce = false;
             }
         }
         else
@@ -558,6 +576,72 @@ public class Cinematic_Movement : MonoBehaviour
 
     }
 
+    void CustomIdle()
+    {
+
+        _isIdle = false;
+     
+        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnIdleWait() > 0)
+        {
+            Debug.Log("Playing " + _allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnim());
+            Debug.Log("Current Node " + _allNodes[_activeNode]);
+            _animator.Play(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnim().ToString());
+            if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio() != null)
+            {
+                if (!_isPlaying)
+                {
+                    Debug.Log(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio());
+                    _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
+
+                    _soundManager.Play();
+                    if (!_soundManager.isPlaying)
+                    {
+                        _isPlaying = false;
+                    }
+                    else
+                    {
+                        _isPlaying = true;
+                    }
+
+                }
+            }
+
+            if (!_setOnce)
+            {
+                _counter = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnIdleWait();
+                _setOnce = true;
+            }
+            _counter -= Time.deltaTime;
+           // Debug.Log(_counter);
+
+
+            if (_counter < 0)
+            {
+                _allNodes[_activeNode].GetComponent<NodeObject>().SetComplete();
+                _allNodes[_activeNode].GetComponent<NodeObject>().SetInActive();
+                _activeNode = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnOutputID();
+                _isCustomIdle = false;
+                if (_allNodes[_activeNode] != null)
+                {
+                    _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
+                }
+                _setOnce = false;
+
+                Debug.Log("Exited the custom idle");
+
+                
+                _animator.SetBool("isCustom", false);
+            }
+        }
+        else
+        {
+            _isWalking = false;
+            _isRunning = false;
+            _animator.SetBool("isWalking", false);
+            _animator.SetBool("isRunning", false);
+            _animator.SetBool("skipIdle", false);
+        }
+    }
 
 
     void CustomWalk()

@@ -88,7 +88,7 @@ public class NodeEditor : EditorWindow {
         //Handles.BeginGUI();
 
         GameObject[] _tmpGO = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => go.name).ToArray();
-        _sceneGO = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => go.name).ToArray();
+        _sceneGO = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => int.Parse(go.name.Substring(4))).ToArray();
 
         _charSelect = (CharacterList)EditorGUILayout.EnumPopup("CharacterID", _charSelect);
 
@@ -225,14 +225,19 @@ public class NodeEditor : EditorWindow {
                         nodeID.Add(nodeCounter);
                         nodeCounter++;
                     }
-
-                    if (_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "CustomNode")
+                
+                if (_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "CustomNode")
                     {
+                        
                         CustomNode customNode = new CustomNode();
-                        customNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight);
+                        customNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight + 100);
+
+                        customNode.SetCustomAnimation(_sceneGO[i].GetComponent<NodeObject>().ReturnCustomAnim());
+
                         if (_sceneGO[i].GetComponent<NodeObject>().ReturnCustomAnimType() == "Idle")
                         {
                             customNode.SetIdle(_sceneGO[i].GetComponent<NodeObject>().ReturnIdleWait());
+                            customNode.SetAnimType("Idle");
                         }
                         else if (_sceneGO[i].GetComponent<NodeObject>().ReturnCustomAnimType() == "Walk" || _sceneGO[i].GetComponent<NodeObject>().ReturnCustomAnimType() == "Run" || _sceneGO[i].GetComponent<NodeObject>().ReturnCustomAnimType() == "Ranged")
                         {
@@ -247,6 +252,13 @@ public class NodeEditor : EditorWindow {
                             }
 
                         }
+
+                        windows.Add(customNode);
+                        allGO.Add(_sceneGO[i]);
+
+                        customNode.SetID(nodeCounter);
+                        nodeID.Add(nodeCounter);
+                        nodeCounter++;
                     }
                     if (_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "Ranged")
                     {
@@ -330,7 +342,7 @@ public class NodeEditor : EditorWindow {
                                 {
                                     DrawNodeCurve(windows[j].windowRect, windows[_sceneGO[j].GetComponent<NodeObject>().ReturnOutputID()].windowRect);
                                     Repaint();
-                                break;
+                                //break;
                                 }
                                 else
                                 {
@@ -1031,6 +1043,7 @@ public class NodeEditor : EditorWindow {
             newNode.GetComponent<NodeObject>().setAnimation("CustomNode");
             newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
             newNode.GetComponent<NodeObject>().SetCharID((int)_charSelect);
+            
 
             customNode.SetID(nodeCounter);
 
@@ -1203,6 +1216,7 @@ public class NodeEditor : EditorWindow {
         }
 
         Handles.DrawBezier(startPos, endPos, startTan, endTan, Color.black, null, 1);
+        
         
 
     }

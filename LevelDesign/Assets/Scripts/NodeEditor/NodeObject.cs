@@ -37,7 +37,7 @@ public class NodeObject : MonoBehaviour
     private string _customAnimType;
 
     [SerializeField]
-    private Animation _customAnim;
+    private AnimationClip _customAnim;
 
     private bool _isActive;
 
@@ -166,15 +166,17 @@ public class NodeObject : MonoBehaviour
         return _idleWait;
     }
 
-    public void SetCustomAnim(Animation _cAnim)
+    public void SetCustomAnim(AnimationClip _cAnim)
     {
         _customAnim = _cAnim;
     }
 
-    public Animation ReturnCustomAnim()
+    public AnimationClip ReturnCustomAnim()
     {
         return _customAnim;
     }
+
+    
 
     public void SetCustomAnimType(string _cAnimType)
     {

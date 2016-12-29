@@ -36,7 +36,7 @@ public class SceneSetup : EditorWindow {
 
             GameObject _nodeParent = new GameObject();
             _nodeParent.tag = "NodeParent";
-            _nodeParent.name = "NDDES";
+            _nodeParent.name = "NODES";
 
             GameObject _wayPointParent = new GameObject();
 
@@ -50,6 +50,7 @@ public class SceneSetup : EditorWindow {
 
             GameObject _waypoint = new GameObject();
             _waypoint.name = "CinematicWaypoint";
+            _waypoint.transform.parent = GameObject.Find("WAYPOINTS").transform;
 
 
         }

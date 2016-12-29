@@ -22,6 +22,10 @@ public class NodeEditor : EditorWindow {
 
     [SerializeField]
     private List<BaseNode> windows = new List<BaseNode>();
+
+    [SerializeField]
+    private List<BaseKnob> windowKnob = new List<BaseKnob>();
+
     [SerializeField]
     private List<int> nodeID = new List<int>();
     [SerializeField]
@@ -60,15 +64,16 @@ public class NodeEditor : EditorWindow {
 
     private CharacterList _charSelect;
 
+    
 
     [MenuItem("Cinematics Manager/Node Editor")]
 
     static void ShowEditor()
     {
 
+        // Creating a new window
         NodeEditor editor = EditorWindow.GetWindow<NodeEditor>();
-
-                   
+                          
 
     }
 
@@ -88,6 +93,12 @@ public class NodeEditor : EditorWindow {
         //Handles.BeginGUI();
 
         GameObject[] _tmpGO = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => go.name).ToArray();
+
+        // Different sorting method
+        // OrderBy works fine but when you have more than 9 items it sorts it wrong
+        // 1,10,2,3,4,5,6,7,8,9
+        //
+        // By using the int parser and substring we can sort it out properly
         _sceneGO = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => int.Parse(go.name.Substring(4))).ToArray();
 
         _charSelect = (CharacterList)EditorGUILayout.EnumPopup("CharacterID", _charSelect);
@@ -115,17 +126,20 @@ public class NodeEditor : EditorWindow {
 
             for (int i = 0; i < _sceneGO.Length; i++)
             {
-               // if (_sceneGO[i].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
-               // {
+                if (_sceneGO[i].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
+                {
                 
                     if (_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "Start")
                     {
                         AnimationStartNode animStartNode = new AnimationStartNode();
                         animStartNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight);
 
+                       
                         animStartNode.SetWayPoint(_sceneGO[i].GetComponent<NodeObject>().ReturnWayPoint());
 
                         windows.Add(animStartNode);
+                      
+
                         allGO.Add(_sceneGO[i]);
 
                         animStartNode.SetID(nodeCounter);
@@ -140,7 +154,10 @@ public class NodeEditor : EditorWindow {
                         IdleNode idleNode = new IdleNode();
                         idleNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight);
 
+                    
+
                         windows.Add(idleNode);
+                        
                         allGO.Add(_sceneGO[i]);
 
                         idleNode.SetIdle(_sceneGO[i].GetComponent<NodeObject>().ReturnIdleWait());
@@ -161,6 +178,8 @@ public class NodeEditor : EditorWindow {
                         WalkNode walkNode = new WalkNode();
                         walkNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight);
 
+                  
+
                         walkNode.SetWayPoint(_sceneGO[i].GetComponent<NodeObject>().ReturnWayPoint());
 
                         if (_sceneGO[i].GetComponent<NodeObject>().ReturnAudio() != null)
@@ -172,6 +191,7 @@ public class NodeEditor : EditorWindow {
                         }
 
                         windows.Add(walkNode);
+                     
                         allGO.Add(_sceneGO[i]);
 
                         walkNode.SetID(nodeCounter);
@@ -183,6 +203,7 @@ public class NodeEditor : EditorWindow {
                         RunNode runNode = new RunNode();
                         runNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight);
 
+                    
                         runNode.SetWayPoint(_sceneGO[i].GetComponent<NodeObject>().ReturnWayPoint());
 
 
@@ -195,6 +216,7 @@ public class NodeEditor : EditorWindow {
                         }
 
                         windows.Add(runNode);
+                       
                         allGO.Add(_sceneGO[i]);
 
                         runNode.SetID(nodeCounter);
@@ -219,18 +241,49 @@ public class NodeEditor : EditorWindow {
                         }
 
                         windows.Add(combatIdleNode);
+                       
                         allGO.Add(_sceneGO[i]);
 
                         combatIdleNode.SetID(nodeCounter);
                         nodeID.Add(nodeCounter);
                         nodeCounter++;
                     }
-                
+
+                    if (_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "JumpTo")
+                    {
+                        JumpToNode jumpToNode = new JumpToNode();
+                        jumpToNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight);
+
+                   
+
+                        jumpToNode.SetWayPoint(_sceneGO[i].GetComponent<NodeObject>().ReturnWayPoint());
+
+
+                        if (_sceneGO[i].GetComponent<NodeObject>().ReturnAudio() != null)
+                        {
+
+                           jumpToNode.SetSound("Yes");
+                            jumpToNode.SetAudio(_sceneGO[i].GetComponent<NodeObject>().ReturnAudio());
+
+                        }
+
+                        windows.Add(jumpToNode);
+                       
+                        allGO.Add(_sceneGO[i]);
+
+                        jumpToNode.SetID(nodeCounter);
+                        nodeID.Add(nodeCounter);
+                        nodeCounter++;
+                    }
+
+
                 if (_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "CustomNode")
                     {
                         
                         CustomNode customNode = new CustomNode();
                         customNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight + 100);
+
+                 
 
                         customNode.SetCustomAnimation(_sceneGO[i].GetComponent<NodeObject>().ReturnCustomAnim());
 
@@ -254,6 +307,7 @@ public class NodeEditor : EditorWindow {
                         }
 
                         windows.Add(customNode);
+                       
                         allGO.Add(_sceneGO[i]);
 
                         customNode.SetID(nodeCounter);
@@ -265,7 +319,7 @@ public class NodeEditor : EditorWindow {
                         RangedNode rangedNode = new RangedNode();
                         rangedNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight);
 
-
+                     
                         rangedNode.SetWayPoint(_sceneGO[i].GetComponent<NodeObject>().ReturnWayPoint());
                         if (_sceneGO[i].GetComponent<NodeObject>().ReturnAudio() != null)
                         {
@@ -277,6 +331,7 @@ public class NodeEditor : EditorWindow {
 
 
                         windows.Add(rangedNode);
+                      
                         allGO.Add(_sceneGO[i]);
 
                     
@@ -289,8 +344,7 @@ public class NodeEditor : EditorWindow {
                         SoundTrackNode soundtrackNode = new SoundTrackNode();
                         soundtrackNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight);
 
-
-                        
+                       
                         if (_sceneGO[i].GetComponent<NodeObject>().ReturnAudio() != null)
                         {
 
@@ -301,6 +355,7 @@ public class NodeEditor : EditorWindow {
 
 
                         windows.Add(soundtrackNode);
+                        
                         allGO.Add(_sceneGO[i]);
 
 
@@ -308,7 +363,47 @@ public class NodeEditor : EditorWindow {
                         nodeID.Add(nodeCounter);
                         nodeCounter++;
                     }
-                // }
+
+                    if (_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "Fade")
+                    {
+                        FadeNode fadeNode = new FadeNode();
+                        fadeNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight + 160);
+
+                        fadeNode.SetFade(_sceneGO[i].GetComponent<NodeObject>().ReturnFadeTime());
+                        fadeNode.SetSolid(_sceneGO[i].GetComponent<NodeObject>().ReturnSolidTime());
+                        fadeNode.SetFadeAnimStart(_sceneGO[i].GetComponent<NodeObject>().ReturnFadeAnimStart());
+
+                        if(_sceneGO[i].GetComponent<NodeObject>().ReturnFadeAction() != "Nothing")
+                        {
+                            fadeNode.SetAction("Teleport");
+                        }
+
+                        if(_sceneGO[i].GetComponent<NodeObject>().ReturnWayPoint() != null)
+                        {
+                            fadeNode.SetWayPoint(_sceneGO[i].GetComponent<NodeObject>().ReturnWayPoint());
+                        }
+
+                        if (_sceneGO[i].GetComponent<NodeObject>().ReturnAudio() != null)
+                        {
+
+
+                            fadeNode.SetAudio(_sceneGO[i].GetComponent<NodeObject>().ReturnAudio());
+
+                        }
+
+
+
+                        windows.Add(fadeNode);
+
+                        allGO.Add(_sceneGO[i]);
+
+
+                        fadeNode.SetID(nodeCounter);
+                        nodeID.Add(nodeCounter);
+                        nodeCounter++;
+                    }
+
+                }
             }
 
         }
@@ -342,13 +437,13 @@ public class NodeEditor : EditorWindow {
                                 {
                                     DrawNodeCurve(windows[j].windowRect, windows[_sceneGO[j].GetComponent<NodeObject>().ReturnOutputID()].windowRect);
                                     Repaint();
-                                //break;
+                                
                                 }
                                 else
                                 {
 
                                 }
-                           // }
+                           
                         }
                         else
                         {
@@ -438,6 +533,7 @@ public class NodeEditor : EditorWindow {
                     menu.AddItem(new GUIContent("Add Walk To Node"), false, ContextCallback, "walkNode");
                     menu.AddItem(new GUIContent("Add Run To Node"), false, ContextCallback, "runNode");
                     menu.AddItem(new GUIContent("Add Combat Idle Node"), false, ContextCallback, "combatIdleNode");
+                    menu.AddItem(new GUIContent("Add Teleport To Node"), false, ContextCallback, "jumpToNode");
                     menu.AddItem(new GUIContent("Add Custom Animation Node"), false, ContextCallback, "customNode");
                     menu.AddDisabledItem(new GUIContent("[ ATTACK ANIMATION ]"));
                     menu.AddItem(new GUIContent("Add Ranged Attack Node"), false, ContextCallback, "rangedNode");
@@ -445,7 +541,10 @@ public class NodeEditor : EditorWindow {
                     menu.AddDisabledItem(new GUIContent("[ AUDIO ]"));
 
                     menu.AddItem(new GUIContent("Add Sound Track"), false, ContextCallback, "soundtrackNode");
-                    
+
+                    menu.AddDisabledItem(new GUIContent("[ EDITING ]"));
+                    menu.AddItem(new GUIContent("Add Fade to colour"), false, ContextCallback, "fadeNode");
+
 
                     menu.ShowAsContext();
                     e.Use();
@@ -574,6 +673,7 @@ public class NodeEditor : EditorWindow {
                 if (allGO[i].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
                 {
                     windows[i].windowRect = GUI.Window(i, windows[i].windowRect, DrawNodeWindow, windows[i].windowTitle);
+                    
                 }
             }
         }
@@ -637,9 +737,9 @@ public class NodeEditor : EditorWindow {
             }
         }
 
+        
         EndWindows();
-
-    
+           
         
     }
 
@@ -668,6 +768,11 @@ public class NodeEditor : EditorWindow {
         }
     }
 
+    void DrawInputWindow(int id)
+    {
+
+    }
+
     // ContextCallBack()
     // Called by the OnGUI() to create a new Menu item
     // clb = Callback
@@ -677,195 +782,19 @@ public class NodeEditor : EditorWindow {
     {
         string clb = obj.ToString();
         GameObject _parent = GameObject.FindGameObjectWithTag("NodeParent");
-
-        if(clb.Equals("inputNode"))
+        
+        // If the callback is....        
+        if(clb.Equals("animStartNode"))
         {
 
-            InputNode inputNode = new InputNode();
-            inputNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
-
-            windows.Add(inputNode);
-
-
-            //Create a new empty gameobject to store in the scene 
-            GameObject newNode = new GameObject();
-
-                newNode.AddComponent<NodeObject>();
-                newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
-                newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
-                inputNode.SetID(nodeCounter);
-
-            // make it a child of "Node"
-            newNode.transform.parent = _parent.transform;
-
-            // Name the newly made gameobject with Node + n
-            newNode.name = "Node" + nodeCounter;
-
-            // give it the tag Node
-            newNode.tag = "Node";
-
-            // Add the counter to the nodeID list to keep track of everything
-            nodeID.Add(nodeCounter);
-
-            // Add 1 to the nodecounter
-            nodeCounter++;
-
-           
-         }
-        else if(clb.Equals("outputNode"))
-        {
-            OutputNode outputNode = new OutputNode();
-            outputNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
-
-            windows.Add(outputNode);
-
-            GameObject newNode = new GameObject();
-
-                newNode.AddComponent<NodeObject>();
-                newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
-                newNode.GetComponent<NodeObject>().setTitle(outputNode.windowTitle);
-            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
-
-            outputNode.SetID(nodeCounter);
-
-            newNode.transform.parent = _parent.transform;
-            newNode.name = "Node" + nodeCounter;
-            newNode.tag = "Node";
-            nodeID.Add(nodeCounter);
-            nodeCounter++;
-
-           
-        }
-
-        else if (clb.Equals("calcNode"))
-        {
-            CalcNode calcNode = new CalcNode();
-            calcNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
-            windows.Add(calcNode);
-
-            GameObject newNode = new GameObject();
-
-                newNode.AddComponent<NodeObject>();
-                newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
-                newNode.GetComponent<NodeObject>().setTitle(calcNode.windowTitle);
-            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
-
-            calcNode.SetID(nodeCounter);
-
-            newNode.transform.parent = _parent.transform;
-            newNode.name = "Node" + nodeCounter;
-            newNode.tag = "Node";
-            nodeID.Add(nodeCounter);
-            nodeCounter++;
-
-         
-        }
-
-        else if(clb.Equals("compNode"))
-        {
-            ComparisonNode compNode = new ComparisonNode();
-            compNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
-
-            windows.Add(compNode);
-
-            GameObject newNode = new GameObject();
-
-                newNode.AddComponent<NodeObject>();
-                newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
-                newNode.GetComponent<NodeObject>().setTitle(compNode.windowTitle);
-                newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
-
-            compNode.SetID(nodeCounter);
-
-            newNode.transform.parent = _parent.transform;
-            newNode.name = "Node" + nodeCounter;
-            newNode.tag = "Node";
-            nodeID.Add(nodeCounter);
-            nodeCounter++;
-
-         
-
-
-        }
-        else if(clb.Equals("goActive"))
-        {
-            GameObjectActive goNode = new GameObjectActive();
-            goNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
-
-            windows.Add(goNode);
-
-            GameObject newNode = new GameObject();
-
-                newNode.AddComponent<NodeObject>();
-                newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
-                newNode.GetComponent<NodeObject>().setTitle(goNode.windowTitle);
-            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
-
-            goNode.SetID(nodeCounter);
-
-            newNode.transform.parent = _parent.transform;
-            newNode.name = "Node" + nodeCounter;
-            nodeID.Add(nodeCounter);
-            nodeCounter++;
-
-          
-        }
-
-        else if(clb.Equals("goDistance"))
-        {
-            GameObjectDistance goDist = new GameObjectDistance();
-            goDist.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
-
-            windows.Add(goDist);
-
-            GameObject newNode = new GameObject();
-
-                newNode.AddComponent<NodeObject>();
-                newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
-                newNode.GetComponent<NodeObject>().setTitle(goDist.windowTitle);
-            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
-
-            goDist.SetID(nodeCounter);
-
-            newNode.transform.parent = _parent.transform;
-            newNode.name = "Node" + nodeCounter;
-            nodeID.Add(nodeCounter);
-            nodeCounter++;
-
-           
-        }
-
-        else if(clb.Equals("timerNode"))
-        {
-            TimerNode timerNode = new TimerNode();
-            timerNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
-
-            windows.Add(timerNode);
-
-            GameObject newNode = new GameObject();
-
-                newNode.AddComponent<NodeObject>();
-                newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
-                newNode.GetComponent<NodeObject>().setTitle(timerNode.windowTitle);
-            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
-
-            timerNode.SetID(nodeCounter);
-
-            newNode.transform.parent = _parent.transform;
-            newNode.name = "Node" + nodeCounter;
-            nodeID.Add(nodeCounter);
-            nodeCounter++;
-
-           
-        }
-
-        else if(clb.Equals("animStartNode"))
-        {
+            // Create a new instance of a class and create a new rect
             AnimationStartNode animStartNode = new AnimationStartNode();
             animStartNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
 
+            // Add it to the windows list
             windows.Add(animStartNode);
 
+            // Create a new empty gameobject so we can store it and set the nodeID, title, animation and character id
             GameObject newNode = new GameObject();
 
                 newNode.AddComponent<NodeObject>();
@@ -918,8 +847,10 @@ public class NodeEditor : EditorWindow {
         {
             IdleNode idleNode = new IdleNode();
             idleNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
+
             idleNode.SetID(nodeCounter);
             windows.Add(idleNode);
+        
 
             GameObject newNode = new GameObject();
             
@@ -1028,6 +959,34 @@ public class NodeEditor : EditorWindow {
            
         }
 
+        else if(clb.Equals("jumpToNode"))
+        {
+            JumpToNode jumpNode = new JumpToNode();
+            jumpNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight);
+            windows.Add(jumpNode);
+
+            GameObject newNode = new GameObject();
+
+            newNode.AddComponent<NodeObject>();
+            newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
+            newNode.GetComponent<NodeObject>().setTitle(jumpNode.windowTitle);
+            newNode.GetComponent<NodeObject>().setAnimation("JumpTo");
+            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
+            newNode.GetComponent<NodeObject>().SetCharID((int)_charSelect);
+
+
+            jumpNode.SetID(nodeCounter);
+
+
+            newNode.transform.parent = _parent.transform;
+            newNode.name = "Node" + nodeCounter;
+            newNode.tag = "Node";
+            nodeID.Add(nodeCounter);
+            allGO.Add(newNode);
+            nodeCounter++;
+
+        }
+
         else if(clb.Equals("customNode"))
         {
             CustomNode customNode = new CustomNode();
@@ -1101,6 +1060,32 @@ public class NodeEditor : EditorWindow {
             newNode.GetComponent<NodeObject>().SetCharID((int)_charSelect);
 
             soundNode.SetID(nodeCounter);
+
+            newNode.transform.parent = _parent.transform;
+            newNode.name = "Node" + nodeCounter;
+            newNode.tag = "Node";
+            nodeID.Add(nodeCounter);
+            allGO.Add(newNode);
+            nodeCounter++;
+        }
+
+        else if (clb.Equals("fadeNode"))
+        {
+            FadeNode fadeNode = new FadeNode();
+            fadeNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight + 160);
+
+            windows.Add(fadeNode);
+
+            GameObject newNode = new GameObject();
+
+            newNode.AddComponent<NodeObject>();
+            newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
+            newNode.GetComponent<NodeObject>().setTitle(fadeNode.windowTitle);
+            newNode.GetComponent<NodeObject>().setAnimation("Fade");
+            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
+            newNode.GetComponent<NodeObject>().SetCharID((int)_charSelect);
+
+            fadeNode.SetID(nodeCounter);
 
             newNode.transform.parent = _parent.transform;
             newNode.name = "Node" + nodeCounter;
@@ -1221,5 +1206,5 @@ public class NodeEditor : EditorWindow {
 
     }
 
-    
+   
 }

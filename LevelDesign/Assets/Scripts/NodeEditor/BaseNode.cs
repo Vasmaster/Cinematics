@@ -42,7 +42,7 @@ public abstract class BaseNode : ScriptableObject {
     {
         if(_id < 0 && _nodeID > 0)
         {
-            Debug.Log(_nodeID);
+            
             _nodeID += _id;
         }
         _nodeID = _id;

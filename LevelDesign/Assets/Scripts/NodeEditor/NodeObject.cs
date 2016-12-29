@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class NodeObject : MonoBehaviour
 {
@@ -46,6 +47,24 @@ public class NodeObject : MonoBehaviour
 
     [SerializeField]
     private bool _autoPlay;
+
+    [SerializeField]
+    private float _fadeTimer;
+
+    [SerializeField]
+    private Color _fadeColour;
+
+    [SerializeField]
+    private float _solidTime;
+
+    [SerializeField]
+    private Texture2D _fadeTexture;
+
+    [SerializeField]
+    private string _fadeAction;
+
+    [SerializeField]
+    private string _fadeStart;
 
     public void setNodeID(int _id)
     {
@@ -213,7 +232,7 @@ public class NodeObject : MonoBehaviour
     public void SetName(int _id)
     {
         this.name = "Node" + (_nodeID - 1);
-        Debug.Log(this.name);
+       // Debug.Log(this.name);
     }
 
     public int ReturnNodeID()
@@ -229,6 +248,84 @@ public class NodeObject : MonoBehaviour
     public bool ReturnAutoPlay()
     {
         return _autoPlay;
+    }
+
+    public void SetFadeTime(float _fadeTime)
+    {
+        _fadeTimer = _fadeTime;
+    }
+
+    public void SetFadeTexture(Color _tex)
+    {
+        _fadeColour = _tex;
+
+        
+    }
+
+    public float ReturnFadeTime()
+    {
+        return _fadeTimer;
+    }
+
+    public void SetSolidTime(float _solid)
+    {
+        _solidTime = _solid;
+    }
+
+    public void SetFadeAction(string _nwFadeAction)
+    {
+        _fadeAction = _nwFadeAction;
+    }
+
+    public string ReturnFadeAction()
+    {
+        return _fadeAction;
+    }
+
+    public float ReturnSolidTime()
+    {
+        return _solidTime;
+    }
+
+    public void SetFadeAnimStart(string _animStart)
+    {
+        _fadeStart = _animStart;
+    }
+
+    public string ReturnFadeAnimStart()
+    {
+        return _fadeStart;
+    }
+
+    public void CanvasCheck()
+    {
+        if(GameObject.Find("Canvas") != null)
+        {
+            if(GameObject.Find("Canvas").GetComponent<Image>() == null)
+            {
+                GameObject.Find("Canvas").AddComponent<Image>();
+                GameObject.Find("Canvas").GetComponent<Image>().color = new Color(_fadeColour.r, _fadeColour.g, _fadeColour.b, 0);
+            }
+            else
+            {
+                GameObject.Find("Canvas").GetComponent<Image>().color = new Color(_fadeColour.r, _fadeColour.g, _fadeColour.b, 0);
+            }
+        } 
+        else
+        {
+            GameObject _canvas = new GameObject();
+            _canvas.name = "Canvas";
+            _canvas.AddComponent<Canvas>();
+            _canvas.AddComponent<CanvasGroup>();
+            _canvas.AddComponent<CanvasRenderer>();
+
+            _canvas.GetComponent<Canvas>().renderMode = RenderMode.ScreenSpaceOverlay;
+            _canvas.GetComponent<RectTransform>().position = new Vector2(0, 0);
+            _canvas.AddComponent<Image>();
+
+            _canvas.GetComponent<Image>().color = new Color(_fadeColour.r, _fadeColour.g, _fadeColour.b, 0);
+            
+        }
     }
 
 }

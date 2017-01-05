@@ -75,6 +75,8 @@ public class Cinematic_Movement : MonoBehaviour
     private AudioSource _soundManager;
     private bool _isPlaying;
 
+    private AudioSource _soundTrack;
+
     // The character ID which is used in the Node Editor
     public int CharacterID;
 
@@ -107,6 +109,7 @@ public class Cinematic_Movement : MonoBehaviour
 
         // Fetch the AudioSource component
         _soundManager = GetComponent<AudioSource>();
+        _soundTrack = GetComponent<AudioSource>();
 
         // Find ALL the Nodes in the scene and order them based on the 4th 'thing' in the name, in this case the integer
         _allNodes = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => int.Parse(go.name.Substring(4))).ToArray();
@@ -141,10 +144,16 @@ public class Cinematic_Movement : MonoBehaviour
                     // IF there is a SOUNDTRACK node, Play it!
                     if(_allNodes[i].GetComponent<NodeObject>().ReturnAutoPlay())
                     {
-                        _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
 
-                        _soundManager.Play();
-                        if (!_soundManager.isPlaying)
+                        GameObject _soundGO = new GameObject();
+                        _soundGO.name = "SoundTrack";
+
+                        _soundGO.AddComponent<AudioSource>();
+                        _soundGO.GetComponent<AudioSource>().clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
+                        _soundGO.GetComponent<AudioSource>().Play();
+                        
+                        _soundTrack.Play();
+                        if (!_soundTrack.isPlaying)
                         {
                             _isPlaying = false;
                         }
@@ -495,7 +504,7 @@ public class Cinematic_Movement : MonoBehaviour
                 _setOnce = true;
             }
             _counter -= Time.deltaTime;
-            Debug.Log(_counter);
+            
            
 
             if (_counter < 0)
@@ -1154,7 +1163,7 @@ public class Cinematic_Movement : MonoBehaviour
         _imageComplete = true;
         _imageFader = 1;
 
-        Debug.Log("After yield imageFader is: " + _imageFader);
+        
     }
 
     void DoImage()
@@ -1260,7 +1269,7 @@ public class Cinematic_Movement : MonoBehaviour
                               
                 
 
-                Debug.Log(_imageFader);
+               
 
 
                 if (_imageFader < 0)

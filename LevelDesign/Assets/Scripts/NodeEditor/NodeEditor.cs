@@ -22,7 +22,7 @@ public class NodeEditor : EditorWindow {
 
     [SerializeField]
     private List<BaseNode> windows = new List<BaseNode>();
-
+    
     [SerializeField]
     private List<BaseKnob> windowKnob = new List<BaseKnob>();
 
@@ -296,14 +296,33 @@ public class NodeEditor : EditorWindow {
                         {
 
                             customNode.SetWayPoint(_sceneGO[i].GetComponent<NodeObject>().ReturnWayPoint());
+
+                            if (_sceneGO[i].GetComponent<NodeObject>().ReturnCustomAnimType() == "Walk")
+                            {
+                                customNode.SetAnimType("Walk");
+                            }
+                            if (_sceneGO[i].GetComponent<NodeObject>().ReturnCustomAnimType() == "Run")
+                            {
+                                customNode.SetAnimType("Run");
+                            }
+
+                            if (_sceneGO[i].GetComponent<NodeObject>().ReturnCustomAnimType() == "Ranged")
+                            {
+                                customNode.SetAnimType("Ranged");
+                            }
+
                             if (_sceneGO[i].GetComponent<NodeObject>().ReturnAudio() != null)
                             {
 
                                 customNode.SetSound("Yes");
                                 customNode.SetAudio(_sceneGO[i].GetComponent<NodeObject>().ReturnAudio());
-
+                               
                             }
 
+                        }
+                        else if(_sceneGO[i].GetComponent<NodeObject>().ReturnCustomAnimType() == "Gesture")
+                        {
+                            customNode.SetAnimType("Gesture");
                         }
 
                         windows.Add(customNode);
@@ -399,6 +418,46 @@ public class NodeEditor : EditorWindow {
 
 
                         fadeNode.SetID(nodeCounter);
+                        nodeID.Add(nodeCounter);
+                        nodeCounter++;
+                    }
+                    if(_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "ParticleSystem")
+                    {
+                        ParticleNode particleNode = new ParticleNode();
+                        particleNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight + 50);
+
+                        particleNode.SetParticleSystem(_sceneGO[i].GetComponent<NodeObject>().ReturnParticleSystem());
+                        particleNode.SetParticleAction(_sceneGO[i].GetComponent<NodeObject>().ReturnParticleAction());
+                        particleNode.SetAudio(_sceneGO[i].GetComponent<NodeObject>().ReturnAudio());
+
+                        windows.Add(particleNode);
+                        allGO.Add(_sceneGO[i]);
+                        particleNode.SetID(nodeCounter);
+                        nodeID.Add(nodeCounter);
+                        nodeCounter++;
+                    }
+
+                    if (_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "Image")
+                    {
+                        ImageNode imageNode = new ImageNode();
+                        imageNode.windowRect = new Rect(_sceneGO[i].GetComponent<NodeObject>().ReturnPosX(), _sceneGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight + 100);
+
+                        imageNode.SetImage(_sceneGO[i].GetComponent<NodeObject>().ReturnUserImage());
+                        imageNode.SetImageMode(_sceneGO[i].GetComponent<NodeObject>().ReturnImageMode());
+                        imageNode.SetScreenTime(_sceneGO[i].GetComponent<NodeObject>().ReturnImageTime());
+
+
+                        if (_sceneGO[i].GetComponent<NodeObject>().ReturnAudio() != null)
+                        {
+
+
+                            imageNode.SetAudio(_sceneGO[i].GetComponent<NodeObject>().ReturnAudio());
+
+                        }
+
+                        windows.Add(imageNode);
+                        allGO.Add(_sceneGO[i]);
+                        imageNode.SetID(nodeCounter);
                         nodeID.Add(nodeCounter);
                         nodeCounter++;
                     }
@@ -544,7 +603,10 @@ public class NodeEditor : EditorWindow {
 
                     menu.AddDisabledItem(new GUIContent("[ EDITING ]"));
                     menu.AddItem(new GUIContent("Add Fade to colour"), false, ContextCallback, "fadeNode");
+                    menu.AddItem(new GUIContent("Add Image Node"), false, ContextCallback, "imageNode");
 
+                    menu.AddDisabledItem(new GUIContent("[ SFX ]"));
+                    menu.AddItem(new GUIContent("Particle System Node "), false, ContextCallback, "particleNode");
 
                     menu.ShowAsContext();
                     e.Use();
@@ -673,10 +735,12 @@ public class NodeEditor : EditorWindow {
                 if (allGO[i].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
                 {
                     windows[i].windowRect = GUI.Window(i, windows[i].windowRect, DrawNodeWindow, windows[i].windowTitle);
-                    
+
                 }
             }
         }
+
+        
 
         /////////////////////////////////////////////////////////////////////////////////////////////////////
         //                                    DIRTY CANVAS MOVING               
@@ -752,6 +816,8 @@ public class NodeEditor : EditorWindow {
         {
             windows[id].DrawWindow();
 
+          
+
             // set it dragable
             GUI.DragWindow();
 
@@ -770,7 +836,10 @@ public class NodeEditor : EditorWindow {
 
     void DrawInputWindow(int id)
     {
+        windowKnob[id].DrawWindow();
+        GUI.DragWindow();
 
+        Repaint();
     }
 
     // ContextCallBack()
@@ -1073,9 +1142,9 @@ public class NodeEditor : EditorWindow {
         {
             FadeNode fadeNode = new FadeNode();
             fadeNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight + 160);
-
+                       
             windows.Add(fadeNode);
-
+            
             GameObject newNode = new GameObject();
 
             newNode.AddComponent<NodeObject>();
@@ -1095,6 +1164,58 @@ public class NodeEditor : EditorWindow {
             nodeCounter++;
         }
 
+        else if (clb.Equals("particleNode"))
+        {
+            ParticleNode particleNode = new ParticleNode();
+            particleNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight + 50);
+
+            windows.Add(particleNode);
+
+
+            GameObject newNode = new GameObject();
+
+            newNode.AddComponent<NodeObject>();
+            newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
+            newNode.GetComponent<NodeObject>().setTitle(particleNode.windowTitle);
+            newNode.GetComponent<NodeObject>().setAnimation("ParticleSystem");
+            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
+            newNode.GetComponent<NodeObject>().SetCharID((int)_charSelect);
+
+            particleNode.SetID(nodeCounter);
+
+            newNode.transform.parent = _parent.transform;
+            newNode.name = "Node" + nodeCounter;
+            newNode.tag = "Node";
+            nodeID.Add(nodeCounter);
+            allGO.Add(newNode);
+            nodeCounter++;
+        }
+        else if (clb.Equals("imageNode"))
+        {
+            ImageNode imageNode = new ImageNode();
+            imageNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight + 100);
+
+            windows.Add(imageNode);
+
+
+            GameObject newNode = new GameObject();
+
+            newNode.AddComponent<NodeObject>();
+            newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
+            newNode.GetComponent<NodeObject>().setTitle(imageNode.windowTitle);
+            newNode.GetComponent<NodeObject>().setAnimation("Image");
+            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
+            newNode.GetComponent<NodeObject>().SetCharID((int)_charSelect);
+
+            imageNode.SetID(nodeCounter);
+
+            newNode.transform.parent = _parent.transform;
+            newNode.name = "Node" + nodeCounter;
+            newNode.tag = "Node";
+            nodeID.Add(nodeCounter);
+            allGO.Add(newNode);
+            nodeCounter++;
+        }
         else if(clb.Equals("makeTransition"))
         {
             bool clickedOnWindow = false;

@@ -40,6 +40,7 @@ public class NodeObject : MonoBehaviour
     [SerializeField]
     private AnimationClip _customAnim;
 
+    [SerializeField]
     private bool _isActive;
 
     [SerializeField]
@@ -65,6 +66,22 @@ public class NodeObject : MonoBehaviour
 
     [SerializeField]
     private string _fadeStart;
+
+
+    [SerializeField]
+    private ParticleSystem _particleSystem;
+
+    [SerializeField]
+    private string _particleAction;
+
+    [SerializeField]
+    private Sprite _userImage;
+
+    [SerializeField]
+    private string _imageMode;
+
+    [SerializeField]
+    private float _imageTime;
 
     public void setNodeID(int _id)
     {
@@ -295,6 +312,56 @@ public class NodeObject : MonoBehaviour
     public string ReturnFadeAnimStart()
     {
         return _fadeStart;
+    }
+
+    public void SetParticleSystem(ParticleSystem _pSystem)
+    {
+        _particleSystem = _pSystem;
+    }
+
+    public void SetParticleAction(string _pAction)
+    {
+        _particleAction = _pAction;
+    }
+
+    public ParticleSystem ReturnParticleSystem()
+    {
+        return _particleSystem;
+    }
+
+    public string ReturnParticleAction()
+    {
+        return _particleAction;
+    }
+
+    public void SetUserImage(Sprite _img)
+    {
+        _userImage = _img;
+    }
+
+    public void SetImageMode(string _mode)
+    {
+        _imageMode = _mode;
+    }
+
+    public void SetImageTime(float _time)
+    {
+        _imageTime = _time;
+    }
+
+    public Sprite ReturnUserImage()
+    {
+        return _userImage;
+    }
+
+    public string ReturnImageMode()
+    {
+        return _imageMode;
+    }
+
+    public float ReturnImageTime()
+    {
+        return _imageTime;
     }
 
     public void CanvasCheck()

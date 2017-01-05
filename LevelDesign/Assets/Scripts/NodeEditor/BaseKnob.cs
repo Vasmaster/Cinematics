@@ -14,6 +14,14 @@ public class BaseKnob : ScriptableObject
 
     }
 
+    public virtual void DrawWindow()
+    {
+        //windowTitle = EditorGUILayout.TextField("Title", windowTitle);
+
+    }
+
+    
+
     public virtual void NodeDeleted(BaseNode node)
     {
 

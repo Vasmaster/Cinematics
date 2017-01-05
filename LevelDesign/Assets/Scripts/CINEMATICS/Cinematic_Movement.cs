@@ -42,6 +42,8 @@ public class Cinematic_Movement : MonoBehaviour
     private bool _isMelee = false;
     private bool _isTeleport = false;
     private bool _isFade = false;
+    private bool _isParticle = false;
+    private bool _isImage = false;
 
     // If there is a custom animation
     private bool _isCustom = false;
@@ -83,6 +85,16 @@ public class Cinematic_Movement : MonoBehaviour
     private float _setFadeTime;
 
     private float _solidTime = 0f;
+
+
+    // timer
+
+    private GameObject _screenTimer;
+    private float _onScreenTimer = 0f;
+
+    private bool _imageComplete = false;
+    private float _imageFader = 0f;
+
 
     public void Start()
     {
@@ -147,12 +159,20 @@ public class Cinematic_Movement : MonoBehaviour
                     // Error catching
                 }
             }
-        }       
+        }
+
+        if (GameObject.Find("timeCounter") != null)
+        {
+            _screenTimer = GameObject.Find("timeCounter");
+        }
 
     }
 
     public void Update()
     {
+
+        SequenceTimer();
+
         // Again check if we are using the correct character
         if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCharID() == CharacterID)
         {
@@ -218,13 +238,23 @@ public class Cinematic_Movement : MonoBehaviour
                             _setFadeTime = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnFadeTime();
                         }
 
+                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "ParticleSystem")
+                        {
+                            _isParticle = true;
+                            
+                        }
 
-                        //////////////////////////////////////////////////////
-                        //                  CUSTOM NODES                    //
-                        //////////////////////////////////////////////////////
+                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Image")
+                        {
+                            _isImage = true;
+                        }
+
+                            //////////////////////////////////////////////////////
+                            //                  CUSTOM NODES                    //
+                            //////////////////////////////////////////////////////
 
 
-                        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "CustomNode")
+                            if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "CustomNode")
                         {
                             _isCustom = true;
                             if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnimType() == "Idle")
@@ -273,7 +303,7 @@ public class Cinematic_Movement : MonoBehaviour
             }
             if (_isIdle)
             {
-                Debug.Log("Idle");
+                //Debug.Log("Idle");
                 Idle();
             }
 
@@ -305,6 +335,7 @@ public class Cinematic_Movement : MonoBehaviour
             {
                 if(_isCustomWalk)
                 {
+                   // _animator.SetBool("isCustom", true);
                     CustomWalk();
                 }
                 else if (_isCustomIdle)
@@ -313,12 +344,26 @@ public class Cinematic_Movement : MonoBehaviour
                     CustomIdle();
                     
                 }
+                else if (_isCustomGesture)
+                {
+                    _animator.SetBool("isCustomGesture", true);
+                    CustomGesture();
+                }
                 
             }
             if(_isFade)
             {
                 FadeScreen();
                
+            }
+            if(_isParticle)
+            {
+                Particles();
+            }
+
+            if(_isImage)
+            {
+                DoImage();
             }
         }
     }
@@ -347,6 +392,8 @@ public class Cinematic_Movement : MonoBehaviour
 
     void Walk()
     {
+
+       
         // Has the user set a sound to be played with this Node
         if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio() != null)
         {
@@ -426,7 +473,7 @@ public class Cinematic_Movement : MonoBehaviour
             {
                 if (!_isPlaying)
                 {
-                    Debug.Log(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio());
+                   // Debug.Log(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio());
                     _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
 
                     _soundManager.Play();
@@ -448,7 +495,7 @@ public class Cinematic_Movement : MonoBehaviour
                 _setOnce = true;
             }
             _counter -= Time.deltaTime;
-
+            Debug.Log(_counter);
            
 
             if (_counter < 0)
@@ -456,11 +503,12 @@ public class Cinematic_Movement : MonoBehaviour
                 _allNodes[_activeNode].GetComponent<NodeObject>().SetComplete();
                 _allNodes[_activeNode].GetComponent<NodeObject>().SetInActive();
                 _activeNode = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnOutputID();
-                _isIdle = false;
+                
                 if (_allNodes[_activeNode] != null)
                 {
                     _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
                 }
+                _isIdle = false;
                 _setOnce = false;
             }
         }
@@ -483,7 +531,7 @@ public class Cinematic_Movement : MonoBehaviour
         {
             if (!_isPlaying)
             {
-                Debug.Log(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio());
+                
                 _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
 
                 _soundManager.Play();
@@ -582,7 +630,7 @@ public class Cinematic_Movement : MonoBehaviour
             {
                 if (!_isPlaying)
                 {
-                    Debug.Log(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio());
+                    
                     _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
 
                     _soundManager.Play();
@@ -647,7 +695,7 @@ public class Cinematic_Movement : MonoBehaviour
         {
             if (!_isPlaying)
             {
-                Debug.Log(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio());
+             
                 _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
 
                 _soundManager.Play();
@@ -670,11 +718,11 @@ public class Cinematic_Movement : MonoBehaviour
 
             if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Ranged"))
             {
-            Debug.Log(" Ranged is playing")
+            
 ;            }
             else {
 
-                Debug.Log("Range has ended");
+            
 
                 _isRanged = false;
                 _animator.SetBool("isRanged", false);
@@ -712,14 +760,13 @@ public class Cinematic_Movement : MonoBehaviour
      
         if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnIdleWait() > 0)
         {
-            Debug.Log("Playing " + _allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnim());
-            Debug.Log("Current Node " + _allNodes[_activeNode]);
+            
             _animator.Play(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnCustomAnim().ToString());
             if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio() != null)
             {
                 if (!_isPlaying)
                 {
-                    Debug.Log(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio());
+                    
                     _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
 
                     _soundManager.Play();
@@ -741,7 +788,7 @@ public class Cinematic_Movement : MonoBehaviour
                 _setOnce = true;
             }
             _counter -= Time.deltaTime;
-           // Debug.Log(_counter);
+           
 
 
             if (_counter < 0)
@@ -756,7 +803,7 @@ public class Cinematic_Movement : MonoBehaviour
                 }
                 _setOnce = false;
 
-                Debug.Log("Exited the custom idle");
+             
 
                 
                 _animator.SetBool("isCustom", false);
@@ -780,7 +827,7 @@ public class Cinematic_Movement : MonoBehaviour
         {
             if (!_isPlaying)
             {
-                Debug.Log(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio());
+                
                 _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
 
                 _soundManager.Play();
@@ -836,6 +883,69 @@ public class Cinematic_Movement : MonoBehaviour
     }
 
 
+    void CustomGesture()
+    {
+        
+        _animator.SetBool("isWalking", false);
+        _animator.SetBool("isIdle", false);
+
+        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio() != null)
+        {
+            if (!_isPlaying)
+            {
+                
+                _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
+
+                _soundManager.Play();
+                if (!_soundManager.isPlaying)
+                {
+                    _isPlaying = false;
+                }
+                else
+                {
+                    _isPlaying = true;
+                }
+
+            }
+        }
+            
+        // Bit dirty!
+        // We check if the current normalized time of the animation is greater than 0, if we are NOT in transition mode and if the current normalized time is smaller than 2
+        // If we don't check for greater than 1 and smaller than 2 it does some weird ass shit
+
+        if(_animator.GetCurrentAnimatorStateInfo(0).normalizedTime > 1 && !_animator.IsInTransition(0) && _animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 2)
+        {
+            
+
+            _allNodes[_activeNode].GetComponent<NodeObject>().SetComplete();
+            _allNodes[_activeNode].GetComponent<NodeObject>().SetInActive();
+            _activeNode = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnOutputID();
+            _isCustomGesture = false;
+
+            _animator.SetBool("isCustomGesture", false);
+
+            if (_allNodes[_activeNode] != null)
+            {
+                _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
+            }
+
+            if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() != "Idle")
+            {
+
+                _animator.SetBool("skipIdle", true);
+
+            }
+            if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Idle")
+            {
+
+                _animator.SetBool("skipIdle", false);
+
+            }
+
+        }
+        
+    }
+
     //////////////////////////////////////////////////////
     //                                                  //
     //                Hacky fade to color               //
@@ -872,32 +982,7 @@ public class Cinematic_Movement : MonoBehaviour
                     // IF the fadetimer is HALF of the Fade Time stated by the user
                     if (_fadeTimer >= _allNodes[_activeNode].GetComponent<NodeObject>().ReturnFadeTime() / 2)
                     {
-                        /*
-                        if(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnFadeAnimStart() == "Yes")
-                        {
-                            // Set the current node to Complete
-                           // _allNodes[_activeNode].GetComponent<NodeObject>().SetComplete();
-
-                            // Set the current node to inactive
-                           // _allNodes[_activeNode].GetComponent<NodeObject>().SetInActive();
-
-                            // Get the next node in line
-                            _activeNode = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnOutputID();
-
-                            // Check if the next node actually exists
-                            if (_allNodes[_activeNode] != null)
-                            {
-                                _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
-                            }
-
-                            if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() != "Idle")
-                            {
-
-                                _animator.SetBool("skipIdle", true);
-
-                            }
-                            */
-                       // }
+                       
 
                         // IF we have a 'solid time', meaning the alpha is set to 1              
                         if(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnSolidTime() > 0)
@@ -946,17 +1031,20 @@ public class Cinematic_Movement : MonoBehaviour
                 {
                     _isFade = false;
                     _fadeTimer = 0f;
+                    _setOnce = true;
                 }
-                
 
-                // Set the current node to Complete
-                _allNodes[_activeNode].GetComponent<NodeObject>().SetComplete();
+                if (_setOnce)
+                {
+                    // Set the current node to Complete
+                    _allNodes[_activeNode].GetComponent<NodeObject>().SetComplete();
 
                     // Set the current node to inactive
                     _allNodes[_activeNode].GetComponent<NodeObject>().SetInActive();
 
                     // Get the next node in line
                     _activeNode = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnOutputID();
+                    
 
                     // Check if the next node actually exists
                     if (_allNodes[_activeNode] != null)
@@ -970,13 +1058,82 @@ public class Cinematic_Movement : MonoBehaviour
                         _animator.SetBool("skipIdle", true);
 
                     }
+                    _setOnce = false;
+                }
                 
             }
         }
         
     }
 
-    // Simple timer
+    void Particles()
+    {
+
+        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio() != null)
+        {
+            if (!_isPlaying)
+            {
+
+                _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
+
+                _soundManager.Play();
+                if (!_soundManager.isPlaying)
+                {
+                    _isPlaying = false;
+                }
+                else
+                {
+                    _isPlaying = true;
+                }
+
+            }
+        }
+
+        ParticleSystem _pSystem = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnParticleSystem();
+        if(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnParticleAction() == "Enable")
+        {
+            _pSystem.Play();
+        }
+        else if(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnParticleAction() == "Disable")
+        {
+            _pSystem.Stop();
+        }
+        
+
+                    // Set the current node to Complete
+                    _allNodes[_activeNode].GetComponent<NodeObject>().SetComplete();
+
+                    // Set the current node to inactive
+                    _allNodes[_activeNode].GetComponent<NodeObject>().SetInActive();
+
+                    // Get the next node in line
+                    _activeNode = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnOutputID();
+
+
+                    // Check if the next node actually exists
+                    if (_allNodes[_activeNode] != null)
+                    {
+                        _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
+                    }
+
+                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() != "Idle")
+                    {
+
+                        _animator.SetBool("skipIdle", true);
+
+                    }
+                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() == "Idle")
+                    {
+
+                        _animator.SetBool("skipIdle", false);
+
+                    }
+
+        _isParticle = false;
+
+    }
+
+    // Simple timer for the Fade Node
     IEnumerator SolidTimer()
     {
 
@@ -987,5 +1144,184 @@ public class Cinematic_Movement : MonoBehaviour
         _countUp = false;
         _fadeTimer = 1;
     }
+
+
+    // Simple timer for the Image Node
+    IEnumerator SolidImageTimer()
+    {
+        
+        yield return new WaitForSeconds(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnImageTime());
+        _imageComplete = true;
+        _imageFader = 1;
+
+        Debug.Log("After yield imageFader is: " + _imageFader);
+    }
+
+    void DoImage()
+    {
+
+
+        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio() != null)
+        {
+            if (!_isPlaying)
+            {
+
+                _soundManager.clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
+
+                _soundManager.Play();
+                if (!_soundManager.isPlaying)
+                {
+                    _isPlaying = false;
+                }
+                else
+                {
+                    _isPlaying = true;
+                }
+
+            }
+        }
+
+        GameObject _userImage = GameObject.Find("userImage");
+
+        if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnImageMode() == "Appear")
+        {
+            if (!_imageComplete)
+            {
+                _userImage.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                _userImage.GetComponent<Image>().sprite = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnUserImage();
+                _userImage.GetComponent<RectTransform>().sizeDelta = new Vector2(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnUserImage().textureRect.width, _allNodes[_activeNode].GetComponent<NodeObject>().ReturnUserImage().textureRect.height);
+
+                StartCoroutine(SolidImageTimer());
+            }
+            if (_imageComplete)
+            {
+
+                //_userImage.active = false;
+                _userImage.GetComponent<Image>().sprite = null;
+                _userImage.GetComponent<Image>().color = new Color(0, 0, 0, 0);
+
+                // Set the current node to Complete
+                _allNodes[_activeNode].GetComponent<NodeObject>().SetComplete();
+
+                // Set the current node to inactive
+                _allNodes[_activeNode].GetComponent<NodeObject>().SetInActive();
+
+                // Get the next node in line
+                _activeNode = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnOutputID();
+
+
+                // Check if the next node actually exists
+                if (_allNodes[_activeNode] != null)
+                {
+                    _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
+                }
+
+                if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() != "Idle")
+                {
+
+                    _animator.SetBool("skipIdle", true);
+
+                }
+
+                _isImage = false;
+                _soundManager.Stop();
+
+            }
+
+        }
+        else
+        {
+
+            if(!_imageComplete)
+            {
+                _userImage.GetComponent<Image>().color = new Color(1, 1, 1, _imageFader);
+
+                    _imageFader += Time.deltaTime;
+
+                _userImage.GetComponent<Image>().sprite = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnUserImage();
+                _userImage.GetComponent<RectTransform>().sizeDelta = new Vector2(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnUserImage().textureRect.width, _allNodes[_activeNode].GetComponent<NodeObject>().ReturnUserImage().textureRect.height);
+
+                
+
+                if(_imageFader > 1)
+                {
+                    StartCoroutine(SolidImageTimer());
+                }
+
+            }
+            if (_imageComplete)
+            {
+
+                //_userImage.active = false;
+                //_imageFader -= Time.deltaTime;
+
+                InvokeRepeating("ImageCountdown", 0, 0.05f);
+                _userImage.GetComponent<Image>().color = new Color(1, 1, 1, _imageFader);
+                              
+                
+
+                Debug.Log(_imageFader);
+
+
+                if (_imageFader < 0)
+                {
+                    CancelInvoke();
+                    _userImage.GetComponent<Image>().sprite = null;
+
+                    // Set the current node to Complete
+                    _allNodes[_activeNode].GetComponent<NodeObject>().SetComplete();
+
+                    // Set the current node to inactive
+                    _allNodes[_activeNode].GetComponent<NodeObject>().SetInActive();
+
+                    // Get the next node in line
+                    _activeNode = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnOutputID();
+
+
+                    // Check if the next node actually exists
+                    if (_allNodes[_activeNode] != null)
+                    {
+                        _allNodes[_activeNode].GetComponent<NodeObject>().SetActive();
+                    }
+
+                    if (_allNodes[_activeNode].GetComponent<NodeObject>().ReturnAnim() != "Idle")
+                    {
+
+                        _animator.SetBool("skipIdle", true);
+
+                    }
+
+                    _isImage = false;
+                    _soundManager.Stop();
+                }
+
+            }
+
+            //     _userImage.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+            //     _userImage.GetComponent<Image>().sprite = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnUserImage();
+            //     _userImage.GetComponent<RectTransform>().sizeDelta = new Vector2(_allNodes[_activeNode].GetComponent<NodeObject>().ReturnUserImage().textureRect.width, _allNodes[_activeNode].GetComponent<NodeObject>().ReturnUserImage().textureRect.height);
+
+        }
+
+
+
+    }
+
+    void ImageCountdown()
+    {
+        _imageFader -= 0.05f;
+    }
+
+    void SequenceTimer()
+    {        
+        
+        if(_screenTimer != null)
+        {
+            _onScreenTimer += Time.deltaTime;
+            _screenTimer.GetComponent<Text>().text = _onScreenTimer.ToString("F2");
+            
+        }
+    }
+
 
 }

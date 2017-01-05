@@ -98,6 +98,10 @@ public class FadeNode : BaseInputNode {
 
         GameObject.Find("Node" + base.ReturnID()).GetComponent<NodeObject>().SetFadeAnimStart(_startAnim.ToString());
         */
+
+        
+
+
         if (e.type == EventType.Repaint)
         {
             input1Rect = GUILayoutUtility.GetLastRect();

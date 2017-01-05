@@ -1235,7 +1235,7 @@ namespace JBooth.VertexPainterPro
 
          public void InitMeshConnections()
          {
-            Profiler.BeginSample("Generate Mesh Connections");
+            UnityEngine.Profiling.Profiler.BeginSample("Generate Mesh Connections");
             // a half edge representation would be nice, but really just care about adjacentcy for now.. 
             vertexConnections = new List<int>[meshFilter.sharedMesh.vertexCount];
             for (int i = 0; i < vertexConnections.Length; ++i)
@@ -1279,7 +1279,7 @@ namespace JBooth.VertexPainterPro
                   l.Add(c0);
                }
             }
-            Profiler.EndSample();
+            UnityEngine.Profiling.Profiler.EndSample();
          }
 
          public List<int>[] vertexConnections;
@@ -1766,7 +1766,7 @@ namespace JBooth.VertexPainterPro
 
       void DrawVertexPoints(PaintJob j, Vector3 point)
       {
-         Profiler.BeginSample("Draw Vertex Points");
+         UnityEngine.Profiling.Profiler.BeginSample("Draw Vertex Points");
          PrepBrushMode(j);
          // convert point into local space, so we don't have to convert every point
          point = j.renderer.transform.worldToLocalMatrix.MultiplyPoint3x4(point);
@@ -1786,7 +1786,7 @@ namespace JBooth.VertexPainterPro
                Handles.SphereCap(0, wp, Quaternion.identity, HandleUtility.GetHandleSize(wp) * 0.02f);
             }
          }
-         Profiler.EndSample();
+         UnityEngine.Profiling.Profiler.EndSample();
       }
 
 
@@ -1914,7 +1914,7 @@ namespace JBooth.VertexPainterPro
          // could possibly make this faster by avoiding the double apply..
          if (tab == Tab.Deform)
          {
-            Profiler.BeginSample("Recalculate Normals and Tangents");
+            UnityEngine.Profiling.Profiler.BeginSample("Recalculate Normals and Tangents");
             for (int i = 0; i < jobs.Length; ++i)
             {
                PaintJob j = jobs[i];
@@ -1942,7 +1942,7 @@ namespace JBooth.VertexPainterPro
                   j.stream.Apply();
                }
             }
-            Profiler.EndSample();
+            UnityEngine.Profiling.Profiler.EndSample();
          }
          //Undo.CollapseUndoOperations(Undo.GetCurrentGroup());
       }

@@ -604,7 +604,7 @@ public class NodeEditor : EditorWindow {
                             {
                                 DrawNodeCurve(windows[j].windowRect, windows[_cameraGO[j].GetComponent<NodeObject>().ReturnOutputID()].windowRect);
                                 Repaint();
-                                Debug.Log("redrawing camera nodes");
+                                
                             }
                             else
                             {
@@ -941,9 +941,6 @@ public class NodeEditor : EditorWindow {
         if (allGO[id].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
         {
             windows[id].DrawWindow();
-
-          
-
             // set it dragable
             GUI.DragWindow();
 
@@ -1442,6 +1439,9 @@ public class NodeEditor : EditorWindow {
 
                     selectIndex = i;
                     clickedOnWindow = true;
+
+                    Debug.Log(windows[i]);
+
                     break;
                 }
             }
@@ -1452,10 +1452,6 @@ public class NodeEditor : EditorWindow {
                 
                 BaseNode selNode = windows[selectIndex];
                 
-               
-               
-
-
                 foreach (BaseNode n in windows)
                 {
                     n.NodeDeleted(selNode);
@@ -1479,20 +1475,26 @@ public class NodeEditor : EditorWindow {
                         }
                         allGO[i].GetComponent<NodeObject>().SetName(-1);
                         allGO[i].GetComponent<NodeObject>().setNodeID(-1);
-                        windows[selectIndex].SetID(-1);
+
+                        if (allGO[selectIndex].GetComponent<NodeObject>().ReturnAnim() == "CameraAnimation")
+                        {
+                            allGO[i].GetComponent<NodeObject>().SetCameraName(allGO[i].GetComponent<NodeObject>().ReturnCamera());
+                        }
+
+                            windows[selectIndex].SetID(-1);
                     }
                     
                 }
 
-                windows.RemoveAt(selectIndex);
+               
 
                 if (allGO[selectIndex].GetComponent<NodeObject>().ReturnAnim() == "CameraAnimation")
                 {
                     DestroyImmediate(allGO[selectIndex].GetComponent<NodeObject>().ReturnCamera().gameObject);
                 }
                 DestroyImmediate(allGO[selectIndex].gameObject);
+                windows.RemoveAt(selectIndex);
 
-                
 
                 Debug.Log("Removed windows " + selectIndex);
 

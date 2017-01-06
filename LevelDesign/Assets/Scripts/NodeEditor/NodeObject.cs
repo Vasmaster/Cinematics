@@ -261,8 +261,22 @@ public class NodeObject : MonoBehaviour
 
     public void SetName(int _id)
     {
-        this.name = "Node" + (_nodeID - 1);
-       // Debug.Log(this.name);
+        if (ReturnAnim() == "CameraAnimation")
+        {
+            this.name = "CameraNode" + (_nodeID - 1);
+        }
+        else
+        {
+            this.name = "Node" + (_nodeID - 1);
+        }
+    }
+
+    public void SetCameraName(GameObject _obj)
+    {
+
+        _obj.name = "Cinematics_Camera" + (_nodeID);
+
+        Debug.Log(_obj.name);
     }
 
     public int ReturnNodeID()

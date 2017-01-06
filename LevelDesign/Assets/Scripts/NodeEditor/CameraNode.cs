@@ -23,6 +23,7 @@ public class CameraNode : BaseInputNode {
     private bool _isActive;
 
     private float _cameraEndTime;
+    private string _cameraNote = "Note here";
 
     public CameraNode()
     {
@@ -68,9 +69,13 @@ public class CameraNode : BaseInputNode {
         GUILayout.Label("You are now editing ");
         GUILayout.Label("[Cinematics_Camera" + base.ReturnID() + "]");
         GUILayout.Space(10);
-        _cinematicsCamera = (GameObject)EditorGUILayout.ObjectField(GameObject.Find("CameraNode" + base.ReturnID()).GetComponent<NodeObject>().ReturnCamera(), typeof(GameObject), false);
 
+        if (GameObject.Find("CameraNode" + base.ReturnID()) != null)
+        {
 
+            _cinematicsCamera = (GameObject)EditorGUILayout.ObjectField(GameObject.Find("CameraNode" + base.ReturnID()).GetComponent<NodeObject>().ReturnCamera(), typeof(GameObject), false);
+
+        }
         if (!_turnedOff)
         {
             if (GUILayout.Button("Click to turn the camera OFF"))
@@ -91,7 +96,10 @@ public class CameraNode : BaseInputNode {
         GUILayout.Label("When to switch camera?");
         _mode = (CameraMode)EditorGUILayout.EnumPopup("Action:", _mode);
 
-        GameObject.Find("CameraNode" + base.ReturnID()).GetComponent<NodeObject>().SetCameraEnd(_mode.ToString());
+        if (GameObject.Find("CameraNode" + base.ReturnID()) != null)
+        {
+            GameObject.Find("CameraNode" + base.ReturnID()).GetComponent<NodeObject>().SetCameraEnd(_mode.ToString());
+        }
 
         if(_mode == CameraMode.Time)
         {
@@ -103,7 +111,7 @@ public class CameraNode : BaseInputNode {
                 GameObject.Find("CameraNode" + base.ReturnID()).GetComponent<NodeObject>().SetCameraEndTime(_cameraEndTime);
             }
         }
-
+        
         if (e.type == EventType.Repaint)
         {
             input1Rect = GUILayoutUtility.GetLastRect();

@@ -132,6 +132,7 @@ public class Cinematic_Movement : MonoBehaviour
 
                         // Move the Actor in the start position
                         transform.position = _allNodes[i].GetComponent<NodeObject>().ReturnWayPoint().transform.position;
+                        transform.rotation = _allNodes[i].GetComponent<NodeObject>().ReturnWayPoint().transform.rotation;
 
                         // Get the next node in line
                         _activeNode = _allNodes[i].GetComponent<NodeObject>().ReturnOutputID();

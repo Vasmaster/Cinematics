@@ -16,6 +16,7 @@ public enum CharacterList
     One = 1,
     Two = 2,
     Three = 3,
+    Camera = 4,
 }
 
 public class NodeEditor : EditorWindow {
@@ -46,7 +47,10 @@ public class NodeEditor : EditorWindow {
     
 
     public GUISkin _skin;
-     
+
+    // Array to store all the CameraNode GameObjects in the scene
+    private GameObject[] _cameraGO;
+
     // Array to store all the GameObjects in the scene
     private GameObject[] _sceneGO;
 
@@ -63,7 +67,6 @@ public class NodeEditor : EditorWindow {
     private bool _setPosition;
 
     private CharacterList _charSelect;
-
     
 
     [MenuItem("Cinematics Manager/Node Editor")]
@@ -101,6 +104,8 @@ public class NodeEditor : EditorWindow {
         // By using the int parser and substring we can sort it out properly
         _sceneGO = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => int.Parse(go.name.Substring(4))).ToArray();
 
+        _cameraGO = GameObject.FindGameObjectsWithTag("CameraNode").OrderBy(go => int.Parse(go.name.Substring(10))).ToArray();
+
         _charSelect = (CharacterList)EditorGUILayout.EnumPopup("CharacterID", _charSelect);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,13 +127,15 @@ public class NodeEditor : EditorWindow {
         if (GUILayout.Button("Load from scene"))
         {
             _isLoading = true;
-             //_sceneGO = GameObject.FindGameObjectsWithTag("Node").OrderBy(go => go.name).ToArray();
+             
+            
 
+            // LOAD ALL THE ANIMATION NODES 
             for (int i = 0; i < _sceneGO.Length; i++)
             {
                 if (_sceneGO[i].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
                 {
-                
+                    
                     if (_sceneGO[i].GetComponent<NodeObject>().ReturnAnim() == "Start")
                     {
                         AnimationStartNode animStartNode = new AnimationStartNode();
@@ -462,7 +469,68 @@ public class NodeEditor : EditorWindow {
                         nodeCounter++;
                     }
 
+
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    //                                                                                                                                          //
+                    //                                                                                                                                          //
+                    //                                                              CAMERA NODES                                                                //
+                    //                                                                                                                                          //
+                    //                                                                                                                                          //
+                    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                   
+
+                   
+
                 }
+            }
+
+            // LOAD ALL THE CAMERA NODES
+            for (int i = 0; i < _cameraGO.Length; i++)
+            {
+                
+                if(_cameraGO[i].GetComponent<NodeObject>().ReturnCharID() == (int) _charSelect)
+                {
+                    _cameraGO[i].GetComponent<NodeObject>().ReturnCamera().SetActive(true);
+                    if (_cameraGO[i].GetComponent<NodeObject>().ReturnAnim() == "CameraSetup")
+                    {
+                        CameraSetupNode cameraSetupNode = new CameraSetupNode();
+                        cameraSetupNode.windowRect = new Rect(_cameraGO[i].GetComponent<NodeObject>().ReturnPosX(), _cameraGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight + 150);
+
+
+                        cameraSetupNode.SetCameraSettings(GameObject.Find("CameraSettings").GetComponent<CameraSettings>().ReturnCameraSettings());
+                        cameraSetupNode.SetCameraName(GameObject.Find("CameraSettings").GetComponent<CameraSettings>().ReturnCameraName());
+                        cameraSetupNode.SetAutoCreateCamera(GameObject.Find("CameraSettings").GetComponent<CameraSettings>().ReturnAutoCreateCamera());
+                        cameraSetupNode.SetInitialCamera(GameObject.Find("CameraSettings").GetComponent<CameraSettings>().ReturnInitialCamera());
+                        cameraSetupNode.SetHasAnimation(GameObject.Find("CameraSettings").GetComponent<CameraSettings>().ReturnInitialCameraAnimation());
+                        cameraSetupNode.SetCameraMode(_cameraGO[i].GetComponent<NodeObject>().ReturnCameraEnd());
+                        cameraSetupNode.SetCameraEndTime(_cameraGO[i].GetComponent<NodeObject>().ReturnCameraEndTime());
+
+
+                        windows.Add(cameraSetupNode);
+                        allGO.Add(_cameraGO[i]);
+                        cameraSetupNode.SetID(nodeCounter);
+                        nodeID.Add(nodeCounter);
+                        nodeCounter++;
+                    }
+
+                    if (_cameraGO[i].GetComponent<NodeObject>().ReturnAnim() == "CameraAnimation")
+                    {
+                        CameraNode cameraNode = new CameraNode();
+                        cameraNode.windowRect = new Rect(_cameraGO[i].GetComponent<NodeObject>().ReturnPosX(), _cameraGO[i].GetComponent<NodeObject>().ReturnPosY(), _windowWidth, _windowHeight + 100);
+
+                        cameraNode.SetCamera(_cameraGO[i].GetComponent<NodeObject>().ReturnCamera());
+                        cameraNode.SetCameraMode(_cameraGO[i].GetComponent<NodeObject>().ReturnCameraEnd());
+                        cameraNode.SetCameraEndTime(_cameraGO[i].GetComponent<NodeObject>().ReturnCameraEndTime());
+
+                        windows.Add(cameraNode);
+                        allGO.Add(_cameraGO[i]);
+                        cameraNode.SetID(nodeCounter);
+                        nodeID.Add(nodeCounter);
+                        nodeCounter++;
+                    }
+
+                }
+                
             }
 
         }
@@ -519,6 +587,48 @@ public class NodeEditor : EditorWindow {
                 }
             }
         }
+
+        if (_cameraGO != null && windows.Count > 0)
+        {
+            for (int j = 0; j < _cameraGO.Length; j++)
+            {
+                if (_cameraGO[j] != null)
+                {
+                    if (_cameraGO[j].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
+                    {
+
+                        if (_cameraGO[j].GetComponent<NodeObject>().ReturnOutputID() > 0)
+                        {
+
+                            if (windows[_cameraGO[j].GetComponent<NodeObject>().ReturnOutputID()] != null && _cameraGO[j].GetComponent<NodeObject>().ReturnOutputID() > 0)
+                            {
+                                DrawNodeCurve(windows[j].windowRect, windows[_cameraGO[j].GetComponent<NodeObject>().ReturnOutputID()].windowRect);
+                                Repaint();
+                                Debug.Log("redrawing camera nodes");
+                            }
+                            else
+                            {
+
+                            }
+
+                        }
+                        else
+                        {
+                            // Debug.Log("There is a node that no longer exists so we shall skip it");
+                        }
+                    }
+                }
+                else
+                {
+
+                    // Error catching
+                    Debug.Log("the array _cameraGO is empty");
+
+                }
+            }
+        }
+
+    
         else
         {
             
@@ -541,7 +651,10 @@ public class NodeEditor : EditorWindow {
 
             for (int i = 0; i < _tmpGO.Length; i++)
             {
-                DestroyImmediate(_tmpGO[i]);
+                if (_tmpGO[i].GetComponent<NodeObject>().ReturnCharID() == (int)_charSelect)
+                {
+                    DestroyImmediate(_tmpGO[i]);
+                }
             }
 
             windows.Clear();
@@ -585,28 +698,41 @@ public class NodeEditor : EditorWindow {
                 {
                     GenericMenu menu = new GenericMenu();
 
-                
-                    menu.AddDisabledItem(new GUIContent("[ Cinematics ]"));
-                    menu.AddItem(new GUIContent("Add Animation Start Node"), false, ContextCallback, "animStartNode");
-                    menu.AddItem(new GUIContent("Add Idle Node"), false, ContextCallback, "idleNode");
-                    menu.AddItem(new GUIContent("Add Walk To Node"), false, ContextCallback, "walkNode");
-                    menu.AddItem(new GUIContent("Add Run To Node"), false, ContextCallback, "runNode");
-                    menu.AddItem(new GUIContent("Add Combat Idle Node"), false, ContextCallback, "combatIdleNode");
-                    menu.AddItem(new GUIContent("Add Teleport To Node"), false, ContextCallback, "jumpToNode");
-                    menu.AddItem(new GUIContent("Add Custom Animation Node"), false, ContextCallback, "customNode");
-                    menu.AddDisabledItem(new GUIContent("[ ATTACK ANIMATION ]"));
-                    menu.AddItem(new GUIContent("Add Ranged Attack Node"), false, ContextCallback, "rangedNode");
 
-                    menu.AddDisabledItem(new GUIContent("[ AUDIO ]"));
+                    // If we are NOT in the Camera Node Editor
+                    if (_charSelect != CharacterList.Camera)
+                    {
+                        // ANIMATION MENUS
+                        menu.AddDisabledItem(new GUIContent("[ Cinematics ]"));
+                        menu.AddItem(new GUIContent("Animations/Add Animation Start Node"), false, ContextCallback, "animStartNode");
+                        menu.AddItem(new GUIContent("Animations/Add Idle Node"), false, ContextCallback, "idleNode");
+                        menu.AddItem(new GUIContent("Animations/Add Walk To Node"), false, ContextCallback, "walkNode");
+                        menu.AddItem(new GUIContent("Animations/Add Run To Node"), false, ContextCallback, "runNode");
+                        menu.AddItem(new GUIContent("Animations/Add Combat Idle Node"), false, ContextCallback, "combatIdleNode");
+                        menu.AddItem(new GUIContent("Animations/Add Teleport To Node"), false, ContextCallback, "jumpToNode");
+                        menu.AddItem(new GUIContent("Animations/Add Custom Animation Node"), false, ContextCallback, "customNode");
 
-                    menu.AddItem(new GUIContent("Add Sound Track"), false, ContextCallback, "soundtrackNode");
+                        //ATTACK ANIMATIONS
+                        menu.AddItem(new GUIContent("Attack Animations/Add Ranged Attack Node"), false, ContextCallback, "rangedNode");
 
-                    menu.AddDisabledItem(new GUIContent("[ EDITING ]"));
-                    menu.AddItem(new GUIContent("Add Fade to colour"), false, ContextCallback, "fadeNode");
-                    menu.AddItem(new GUIContent("Add Image Node"), false, ContextCallback, "imageNode");
 
-                    menu.AddDisabledItem(new GUIContent("[ SFX ]"));
-                    menu.AddItem(new GUIContent("Particle System Node "), false, ContextCallback, "particleNode");
+                        // SOUND
+                        menu.AddItem(new GUIContent("Audio/Add Sound Track"), false, ContextCallback, "soundtrackNode");
+
+                        // EDITING
+                        menu.AddItem(new GUIContent("Editing/Add Fade to colour"), false, ContextCallback, "fadeNode");
+                        menu.AddItem(new GUIContent("Editing/Add Image Node"), false, ContextCallback, "imageNode");
+
+                        // SFX
+                        menu.AddItem(new GUIContent("SFX/Particle System Node "), false, ContextCallback, "particleNode");
+                    }
+
+                    // IF we are in the Camera Node Editor only show the Camera Nodes
+                    if (_charSelect == CharacterList.Camera)
+                    {
+                        menu.AddItem(new GUIContent("Camera/Setup"), false, ContextCallback, "cameraSetupNode");
+                        menu.AddItem(new GUIContent("Camera/Camera Animation"), false, ContextCallback, "cameraNode");
+                    }
 
                     menu.ShowAsContext();
                     e.Use();
@@ -1216,6 +1342,72 @@ public class NodeEditor : EditorWindow {
             allGO.Add(newNode);
             nodeCounter++;
         }
+
+        else if (clb.Equals("cameraSetupNode"))
+        {
+            CameraSetupNode cameraSetupNode = new CameraSetupNode();
+            cameraSetupNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight + 150);
+
+            windows.Add(cameraSetupNode);
+
+            GameObject newNode = new GameObject();
+
+            newNode.AddComponent<NodeObject>();
+            newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
+            newNode.GetComponent<NodeObject>().setTitle(cameraSetupNode.windowTitle);
+            newNode.GetComponent<NodeObject>().setAnimation("CameraSetup");
+            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
+            newNode.GetComponent<NodeObject>().SetCharID((int)_charSelect);
+
+            cameraSetupNode.SetID(nodeCounter);
+
+            newNode.transform.parent = _parent.transform;
+            newNode.name = "CameraNode" + nodeCounter;
+            newNode.tag = "CameraNode";
+            nodeID.Add(nodeCounter);
+            allGO.Add(newNode);
+            nodeCounter++;
+
+            if(GameObject.Find("CameraManager") == null)
+            {
+                GameObject cameraManager = new GameObject();
+                cameraManager.name = "CameraManager";
+                cameraManager.AddComponent<CameraManager>();
+            }
+
+
+        }
+
+        else if (clb.Equals("cameraNode"))
+        {
+            CameraNode cameraNode = new CameraNode();
+            cameraNode.windowRect = new Rect(mousePos.x, mousePos.y, _windowWidth, _windowHeight + 100);
+
+            windows.Add(cameraNode);
+
+            GameObject newNode = new GameObject();
+
+            newNode.AddComponent<NodeObject>();
+            newNode.GetComponent<NodeObject>().setNodeID(nodeCounter);
+            newNode.GetComponent<NodeObject>().setTitle(cameraNode.windowTitle);
+            newNode.GetComponent<NodeObject>().setAnimation("CameraAnimation");
+            newNode.GetComponent<NodeObject>().setPosition(mousePos.x, mousePos.y);
+            newNode.GetComponent<NodeObject>().SetCharID((int)_charSelect);
+            
+
+            cameraNode.SetID(nodeCounter);
+            //cameraNode.SetAutoCreate(newNode.GetComponent<NodeObject>().ReturnCameraSetup().GetComponent<NodeObject>().ReturnAutoCam());
+
+            newNode.transform.parent = _parent.transform;
+            newNode.name = "CameraNode" + nodeCounter;
+            newNode.tag = "CameraNode";
+            nodeID.Add(nodeCounter);
+            allGO.Add(newNode);
+            nodeCounter++;
+
+        }
+
+
         else if(clb.Equals("makeTransition"))
         {
             bool clickedOnWindow = false;
@@ -1260,14 +1452,7 @@ public class NodeEditor : EditorWindow {
                 
                 BaseNode selNode = windows[selectIndex];
                 
-                windows.RemoveAt(selectIndex);
-                DestroyImmediate(allGO[selectIndex].gameObject);
-                Debug.Log("Removed windows " + selectIndex);
-
-                nodeID.RemoveAt(selectIndex);
-
-                                
-                allGO.RemoveAt(selectIndex);
+               
                
 
 
@@ -1296,8 +1481,25 @@ public class NodeEditor : EditorWindow {
                         allGO[i].GetComponent<NodeObject>().setNodeID(-1);
                         windows[selectIndex].SetID(-1);
                     }
-                    //Debug.Log(allGO[i].GetComponent<NodeObject>().ReturnNodeID());
+                    
                 }
+
+                windows.RemoveAt(selectIndex);
+
+                if (allGO[selectIndex].GetComponent<NodeObject>().ReturnAnim() == "CameraAnimation")
+                {
+                    DestroyImmediate(allGO[selectIndex].GetComponent<NodeObject>().ReturnCamera().gameObject);
+                }
+                DestroyImmediate(allGO[selectIndex].gameObject);
+
+                
+
+                Debug.Log("Removed windows " + selectIndex);
+
+                nodeID.RemoveAt(selectIndex);
+
+
+                allGO.RemoveAt(selectIndex);
 
                 nodeCounter--;
                 

@@ -83,6 +83,19 @@ public class NodeObject : MonoBehaviour
     [SerializeField]
     private float _imageTime;
 
+    // CAMERA STUFF
+    
+    [SerializeField]
+    private GameObject _camera;
+
+    [SerializeField]
+    private string _cameraEnd;
+
+    [SerializeField]
+    private float _cameraEndTime;
+
+
+
     public void setNodeID(int _id)
     {
         
@@ -394,5 +407,46 @@ public class NodeObject : MonoBehaviour
             
         }
     }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //                                                                                                      //
+    //                                          CAMERA STUFF                                                //
+    //                                                                                                      //
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   
+
+    public void SetCamera(GameObject _cam)
+    {
+        _camera = _cam;
+    }
+
+    public GameObject ReturnCamera()
+    {
+        return _camera;
+    }
+
+    public void SetCameraEnd(string _mode)
+    {
+        _cameraEnd = _mode;
+    }
+
+    public string ReturnCameraEnd()
+    {
+        return _cameraEnd;
+    }
+
+    public void SetCameraEndTime(float _time)
+    {
+        _cameraEndTime = _time;
+    }
+
+    public float ReturnCameraEndTime()
+    {
+        return _cameraEndTime;
+    }
+
+  
 
 }

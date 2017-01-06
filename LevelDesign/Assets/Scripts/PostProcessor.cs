@@ -12,7 +12,7 @@ namespace UnityEngine.PostProcessing.Utilities {
         private PostProcessingProfile _profile;
 
         [SerializeField]
-        private DepthOfFieldModel.Settings _dof;
+        public DepthOfFieldModel.Settings _dof;
 
         // Use this for initialization
         void OnEnable() {
@@ -29,6 +29,20 @@ namespace UnityEngine.PostProcessing.Utilities {
 
         }
 
-        
+       
+        public string ReturnFocalLength()
+        {
+            return _dof.focalLength.ToString();
+        }
+
+        public string ReturnAperture()
+        {
+            return _dof.aperture.ToString();
+        }
+
+        public string ReturnFocusDistance()
+        {
+            return _dof.focusDistance.ToString();
+        }
     }
 }

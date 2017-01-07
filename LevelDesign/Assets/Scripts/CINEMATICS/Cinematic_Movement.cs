@@ -431,7 +431,7 @@ public class Cinematic_Movement : MonoBehaviour
         _dir.y = 0f;                                                                            // we dont want to move up
         Quaternion _targetRot = Quaternion.LookRotation(_dir);                                  // get the rotation in which we should look at
 
-        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRot, Time.time * 1f);  // Slerp the rotations
+        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRot, Time.deltaTime * 2);  // Slerp the rotations
 
         //transform.rotation = _targetRot;                                                      // rotate the player
 
@@ -560,7 +560,7 @@ public class Cinematic_Movement : MonoBehaviour
         Vector3 _dir = _wayPoint.transform.position - transform.position;                                    // get the Vector we are going to move to
         _dir.y = 0f;                                                                    // we dont want to move up
         Quaternion _targetRot = Quaternion.LookRotation(_dir);                          // get the rotation in which we should look at
-        transform.rotation = _targetRot;                                                // rotate the player
+        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRot, Time.deltaTime * 2);  // Slerp the rotations
 
         Vector3 _forward = transform.TransformDirection(Vector3.forward);               // create a forward Vector3
 
@@ -856,7 +856,7 @@ public class Cinematic_Movement : MonoBehaviour
         Vector3 _dir = _wayPoint.transform.position - transform.position;                                    // get the Vector we are going to move to
         _dir.y = 0f;                                                                    // we dont want to move up
         Quaternion _targetRot = Quaternion.LookRotation(_dir);                          // get the rotation in which we should look at
-        transform.rotation = _targetRot;                                                // rotate the player
+        transform.rotation = Quaternion.Slerp(transform.rotation, _targetRot, Time.deltaTime * 2);  // Slerp the rotations
 
         Vector3 _forward = transform.TransformDirection(Vector3.forward);               // create a forward Vector3
 

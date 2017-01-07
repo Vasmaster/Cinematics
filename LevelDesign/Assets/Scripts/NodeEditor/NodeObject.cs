@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class NodeObject : MonoBehaviour
 {
@@ -276,7 +277,7 @@ public class NodeObject : MonoBehaviour
 
         _obj.name = "Cinematics_Camera" + (_nodeID);
 
-        Debug.Log(_obj.name);
+        AssetDatabase.RenameAsset(_obj.GetComponent<Animator>().runtimeAnimatorController.name, "Cinematics_Controller" + _nodeID);
     }
 
     public int ReturnNodeID()

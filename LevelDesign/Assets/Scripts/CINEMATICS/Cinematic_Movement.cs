@@ -150,7 +150,7 @@ public class Cinematic_Movement : MonoBehaviour
                         _soundGO.name = "SoundTrack";
 
                         _soundGO.AddComponent<AudioSource>();
-                        _soundGO.GetComponent<AudioSource>().clip = _allNodes[_activeNode].GetComponent<NodeObject>().ReturnAudio();
+                        _soundGO.GetComponent<AudioSource>().clip = _allNodes[i].GetComponent<NodeObject>().ReturnAudio();
                         _soundGO.GetComponent<AudioSource>().Play();
                         
                         _soundTrack.Play();

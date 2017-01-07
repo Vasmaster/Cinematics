@@ -85,7 +85,7 @@ public class CameraManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        Debug.Log("Current Active Node: " + _cameraNodes[_activeNode] + " which has " + _cameraNodes[_activeNode].GetComponent<NodeObject>().ReturnCameraEnd());
+       // Debug.Log("Current Active Node: " + _cameraNodes[_activeNode] + " which has " + _cameraNodes[_activeNode].GetComponent<NodeObject>().ReturnCameraEnd());
 
         if (!_cameraNodes[_activeNode].GetComponent<NodeObject>().ReturnComplete())
         {

@@ -66,6 +66,11 @@ public class CameraNode : BaseInputNode {
             _createdCamera = true;
         }
 
+        if(GameObject.Find("Cinematics_Camera" + base.ReturnID()) != null)
+        {
+            GameObject.Find("Cinematics_Camera" + base.ReturnID()).GetComponent<Animator>().runtimeAnimatorController = Resources.Load("Cinematic_controller" + base.ReturnID()) as RuntimeAnimatorController;
+        }
+
         GUILayout.Label("You are now editing ");
         GUILayout.Label("[Cinematics_Camera" + base.ReturnID() + "]");
         GUILayout.Space(10);
@@ -99,6 +104,11 @@ public class CameraNode : BaseInputNode {
         if (GameObject.Find("CameraNode" + base.ReturnID()) != null)
         {
             GameObject.Find("CameraNode" + base.ReturnID()).GetComponent<NodeObject>().SetCameraEnd(_mode.ToString());
+        }
+
+        else
+        {
+            Debug.Log("Cant find Camera: CameraNode" + base.ReturnID());
         }
 
         if(_mode == CameraMode.Time)

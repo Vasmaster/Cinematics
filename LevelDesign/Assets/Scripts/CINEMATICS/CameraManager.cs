@@ -35,10 +35,18 @@ public class CameraManager : MonoBehaviour {
         {
             CameraNameSetup();
         }
+        else
+        {
+            _cameraCanvasName.text = "";
+        }
 
         if(_cameraSettings)
         {
             CameraSettingsSetup();
+        }
+        else
+        {
+            _cameraCanvasSettings.text = "";
         }
 
         if (_camSettings.GetComponent<CameraSettings>().ReturnInitialCameraAnimation())

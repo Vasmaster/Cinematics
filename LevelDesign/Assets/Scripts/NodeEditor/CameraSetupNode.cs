@@ -107,6 +107,8 @@ public class CameraSetupNode : BaseInputNode {
                     GUILayout.Label("When to switch camera?");
                     _camMode = (CameraMode)EditorGUILayout.EnumPopup("Action:", _camMode);
 
+                    //Debug.Log("BaseID: " + base.ReturnID());
+
                     GameObject.Find("CameraNode" + base.ReturnID()).GetComponent<NodeObject>().SetCameraEnd(_camMode.ToString());
                     GameObject.Find("CameraNode" + base.ReturnID()).GetComponent<NodeObject>().SetCamera(_initialCamera);
 

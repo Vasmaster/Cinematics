@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Linq;
 
-
+#if UNITY_EDITOR
 
 //  Create a enum
 // We say " Zero = 0"  because we want to use an integer for the character ID
@@ -1060,31 +1060,64 @@ public class NodeEditor : EditorWindow {
 
                 Vector2 _offSet = _initialPos - e.mousePosition;
 
-                for (int i = 0; i < windows.Count; i++)
+                if ((int)_charSelect < 4)
                 {
-                    if (_initialPos.x < e.mousePosition.x)
+
+                    for (int i = 0; i < windows.Count; i++)
                     {
-                        windows[i].windowRect.x -= _offSet.x;
-                        _setPosition = false;
-                       
+                        if (_initialPos.x < e.mousePosition.x)
+                        {
+                            windows[i].windowRect.x -= _offSet.x;
+                            _setPosition = false;
+
+                        }
+                        if (_initialPos.x > e.mousePosition.x)
+                        {
+                            windows[i].windowRect.x -= _offSet.x;
+                            _setPosition = false;
+
+                        }
+                        if (_initialPos.y < e.mousePosition.y)
+                        {
+                            windows[i].windowRect.y -= _offSet.y;
+                            _setPosition = false;
+                        }
+                        if (_initialPos.y > e.mousePosition.y)
+                        {
+                            windows[i].windowRect.y -= _offSet.y;
+                            _setPosition = false;
+                        }
+
                     }
-                    if (_initialPos.x > e.mousePosition.x)
+                }
+                else
+                {
+                    for (int i = 0; i < cameraWindows.Count; i++)
                     {
-                        windows[i].windowRect.x -= _offSet.x;
-                        _setPosition = false;
-                       
+                        if (_initialPos.x < e.mousePosition.x)
+                        {
+                            cameraWindows[i].windowRect.x -= _offSet.x;
+                            _setPosition = false;
+
+                        }
+                        if (_initialPos.x > e.mousePosition.x)
+                        {
+                            cameraWindows[i].windowRect.x -= _offSet.x;
+                            _setPosition = false;
+
+                        }
+                        if (_initialPos.y < e.mousePosition.y)
+                        {
+                            cameraWindows[i].windowRect.y -= _offSet.y;
+                            _setPosition = false;
+                        }
+                        if (_initialPos.y > e.mousePosition.y)
+                        {
+                            cameraWindows[i].windowRect.y -= _offSet.y;
+                            _setPosition = false;
+                        }
+
                     }
-                    if (_initialPos.y < e.mousePosition.y)
-                    {
-                        windows[i].windowRect.y -= _offSet.y;
-                        _setPosition = false;
-                    }
-                    if (_initialPos.y > e.mousePosition.y)
-                    {
-                        windows[i].windowRect.y -= _offSet.y;
-                        _setPosition = false;
-                    }
-                    
                 }
             }
         }
@@ -1812,3 +1845,4 @@ public class NodeEditor : EditorWindow {
 
    
 }
+#endif

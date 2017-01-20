@@ -13,7 +13,7 @@ public enum StartAnimation
     No,
     Yes,
 }
-
+#if UNITY_EDITOR
 public class FadeNode : BaseInputNode {
 
     private BaseInputNode input1;
@@ -207,3 +207,4 @@ public class FadeNode : BaseInputNode {
     }
 
 }
+#endif

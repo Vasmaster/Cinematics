@@ -9,7 +9,7 @@ public enum CameraMode
     AnimationEnd,
     Time,
 }
-
+#if UNITY_EDITOR
 public class CameraSetupNode : BaseInputNode {
 
     private BaseInputNode input1;
@@ -234,3 +234,4 @@ public class CameraSetupNode : BaseInputNode {
 
 
 }
+#endif

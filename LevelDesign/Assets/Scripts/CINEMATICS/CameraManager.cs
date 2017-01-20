@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Linq;
 using UnityEngine.UI;
+using System;
 
 public class CameraManager : MonoBehaviour {
 

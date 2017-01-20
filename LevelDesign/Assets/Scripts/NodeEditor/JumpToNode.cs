@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
-
+#if UNITY_EDITOR
 public class JumpToNode : BaseInputNode {
 
     private BaseInputNode input1;
@@ -125,3 +125,4 @@ public class JumpToNode : BaseInputNode {
         }
     }
 }
+#endif

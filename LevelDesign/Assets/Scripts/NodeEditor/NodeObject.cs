@@ -274,10 +274,11 @@ public class NodeObject : MonoBehaviour
 
     public void SetCameraName(GameObject _obj)
     {
-
+        
         _obj.name = "Cinematics_Camera" + (_nodeID);
-
+        #if UNITY_EDITOR
         AssetDatabase.RenameAsset(_obj.GetComponent<Animator>().runtimeAnimatorController.name, "Cinematics_Controller" + _nodeID);
+        #endif
     }
 
     public int ReturnNodeID()

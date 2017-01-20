@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
-
+#if UNITY_EDITOR
 public class CombatIdleNode : BaseInputNode {
 
     private BaseInputNode input1;
@@ -119,3 +119,4 @@ public class CombatIdleNode : BaseInputNode {
     }
 
 }
+#endif

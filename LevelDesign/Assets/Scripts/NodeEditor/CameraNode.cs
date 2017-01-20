@@ -2,7 +2,12 @@
 using System.Collections;
 using UnityEditor;
 using System;
+
+
+#if UNITY_EDITOR
+
 using UnityEditor.Animations;
+
 
 public class CameraNode : BaseInputNode {
 
@@ -190,3 +195,4 @@ public class CameraNode : BaseInputNode {
         }
     }
 }
+#endif

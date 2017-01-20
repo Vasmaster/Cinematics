@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
-
+#if UNITY_EDITOR
 
 public class SoundTrackNode : BaseInputNode {
 
@@ -77,3 +77,4 @@ public class SoundTrackNode : BaseInputNode {
     }
 
 }
+#endif

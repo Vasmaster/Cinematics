@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEditor;
 using System;
 
+#if UNITY_EDITOR
+
 public class AnimationStartNode : BaseInputNode {
 
     private GameObject startPos;
@@ -59,3 +61,4 @@ public class AnimationStartNode : BaseInputNode {
     }
 
 }
+#endif

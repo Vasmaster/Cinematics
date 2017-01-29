@@ -101,7 +101,7 @@ public class PlayerLevel : MonoBehaviour {
 
 }
 
-
+#if UNITY_EDITOR
 [CustomEditor(typeof(PlayerLevel))]
 public class PlayerLevelEditor : Editor
 {
@@ -117,3 +117,4 @@ public class PlayerLevelEditor : Editor
     }
 
 }
+#endif

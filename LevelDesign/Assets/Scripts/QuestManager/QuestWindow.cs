@@ -26,6 +26,8 @@ public enum QuestReward
     Item,
 }
 
+#if UNITY_EDITOR
+
 public class QuestWindow : EditorWindow {
 
     public QuestTypes _QT;
@@ -321,3 +323,4 @@ public class QuestWindow : EditorWindow {
     }
 
 }
+#endif

@@ -20,8 +20,9 @@ public class CustomNode : BaseInputNode
     private BaseInputNode input1;
     private Rect input1Rect;
 
-    private Animation _customAnim;
-
+    private AnimationClip _customAnim;
+    
+    
     private AnimationType _animType;
 
     private float idleTime;
@@ -56,6 +57,7 @@ public class CustomNode : BaseInputNode
             float.TryParse(EditorGUILayout.TextField("Idle for: ", idleTime.ToString()), out idleTime);
 
             GameObject.Find("Node" + base.ReturnID()).GetComponent<NodeObject>().SetCustomAnimType("Idle");
+                        
 
             if (idleTime > 0)
             {
@@ -112,7 +114,13 @@ public class CustomNode : BaseInputNode
         }
 
         GUILayout.Label("Animation: ");
-        _customAnim = (Animation)EditorGUILayout.ObjectField(_customAnim, typeof(Animation), true);
+        _customAnim = (AnimationClip)EditorGUILayout.ObjectField(_customAnim, typeof(AnimationClip), true);
+        
+
+        if(_customAnim != null)
+        {
+            GameObject.Find("Node" + base.ReturnID()).GetComponent<NodeObject>().SetCustomAnim(_customAnim);
+        }
 
         _sound = (HasSound)EditorGUILayout.EnumPopup("Sound: ", _sound);
 
@@ -142,7 +150,7 @@ public class CustomNode : BaseInputNode
         idleTime = _time;
     }
 
-    public void SetCustomAnimation(Animation _cAnim)
+    public void SetCustomAnimation(AnimationClip _cAnim)
     {
         _customAnim = _cAnim;
     }

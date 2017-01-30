@@ -9,7 +9,7 @@ public enum ParticleAction
     Enable,
     Disable,
 }
-
+#if UNITY_EDITOR
 public class ParticleNode : BaseInputNode
 {
 
@@ -133,3 +133,4 @@ public class ParticleNode : BaseInputNode
 
     }
 }
+#endif

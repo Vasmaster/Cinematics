@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEditor;
 
 
-
+#if UNITY_EDITOR
 public class WalkNode : BaseInputNode {
 
     private BaseInputNode input1;
@@ -132,3 +132,4 @@ public class WalkNode : BaseInputNode {
     }
 
 }
+#endif

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Linq;
 using UnityEngine.UI;
+using System;
 
 public class CameraManager : MonoBehaviour {
 
@@ -35,10 +36,18 @@ public class CameraManager : MonoBehaviour {
         {
             CameraNameSetup();
         }
+        else
+        {
+            _cameraCanvasName.text = "";
+        }
 
         if(_cameraSettings)
         {
             CameraSettingsSetup();
+        }
+        else
+        {
+            _cameraCanvasSettings.text = "";
         }
 
         if (_camSettings.GetComponent<CameraSettings>().ReturnInitialCameraAnimation())
@@ -131,8 +140,6 @@ public class CameraManager : MonoBehaviour {
                         _activeNode = _cameraNodes[_activeNode].GetComponent<NodeObject>().ReturnOutputID();
                         _cameraNodes[_activeNode].GetComponent<NodeObject>().SetActive();
                         _cameraNodes[_activeNode].GetComponent<NodeObject>().ReturnCamera().SetActive(true);
-
-                        
                         
                     }
                 }
@@ -188,6 +195,7 @@ public class CameraManager : MonoBehaviour {
                 _myBars.GetComponent<RectTransform>().sizeDelta = new Vector2(_myCanvas.GetComponent<RectTransform>().rect.width, 100);
                 _myBars.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, ((_myCanvas.GetComponent<RectTransform>().rect.height / 2) * -1) + 50);
             }
+
 
         }
 

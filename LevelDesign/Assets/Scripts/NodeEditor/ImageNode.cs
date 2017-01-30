@@ -9,7 +9,7 @@ public enum ImageMode
     Appear,
     Fade,
 }
-
+#if UNITY_EDITOR
 public class ImageNode : BaseInputNode {
 
     private BaseInputNode input1;
@@ -158,3 +158,4 @@ public class ImageNode : BaseInputNode {
         }
     }
 }
+#endif

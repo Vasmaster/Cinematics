@@ -537,6 +537,7 @@ public class QuestManager : MonoBehaviour {
     }
 }
 
+#if UNITY_EDITOR
 
 [CustomEditor(typeof(QuestManager))]
 public class QuestManagerEditor : Editor
@@ -573,3 +574,4 @@ public class QuestManagerEditor : Editor
     }
 
 }
+#endif

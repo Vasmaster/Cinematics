@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
-
+#if UNITY_EDITOR
 public class RangedNode : BaseInputNode {
 
     private BaseInputNode input1;
@@ -112,3 +112,4 @@ public class RangedNode : BaseInputNode {
     }
 
 }
+#endif

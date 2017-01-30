@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEditor;
 using System;
 
+#if UNITY_EDITOR
+
 public class AnimationNode : BaseInputNode {
 
     private GameObject wayPoint;
@@ -133,3 +135,4 @@ public class AnimationNode : BaseInputNode {
         
     }
 }
+#endif

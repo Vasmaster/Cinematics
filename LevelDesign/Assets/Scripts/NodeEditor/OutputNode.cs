@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEditor;
 using System;
-
+#if UNITY_EDITOR
 public class OutputNode : BaseNode {
 
     private string result = "";
@@ -99,3 +99,4 @@ public class OutputNode : BaseNode {
     }
 
 }
+#endif

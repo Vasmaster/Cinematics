@@ -69,7 +69,7 @@ public class ProceduralBuilding : MonoBehaviour {
     }
 
 }
-
+#if UNITY_EDITOR
 [CustomEditor(typeof(ProceduralBuilding))]
 public class ProcBuildingEditor : Editor
 {
@@ -88,4 +88,4 @@ public class ProcBuildingEditor : Editor
     }
 
 }
-
+#endif

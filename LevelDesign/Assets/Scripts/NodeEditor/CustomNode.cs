@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using System;
 
 public enum AnimationType
 {
@@ -12,7 +13,7 @@ public enum AnimationType
     Ranged,
     Gesture,
 }
-
+#if UNITY_EDITOR
 public class CustomNode : BaseInputNode
 {
 
@@ -37,6 +38,7 @@ public class CustomNode : BaseInputNode
     {
         windowTitle = "Custom Animation Node";
         hasInputs = true;
+        
     }
 
 
@@ -226,7 +228,10 @@ public class CustomNode : BaseInputNode
             rect.width = 1;
             rect.height = 1;
 
+
             NodeEditor.DrawNodeCurve(input1.windowRect, rect);
+
         }
     }
 }
+#endif

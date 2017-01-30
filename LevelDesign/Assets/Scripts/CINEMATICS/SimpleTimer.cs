@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEditor;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+
 public class SimpleTimer : EditorWindow
 {
     GameObject myCanvas;
@@ -92,3 +94,4 @@ public class SimpleTimer : EditorWindow
         _canvas.GetComponent<RectTransform>().position = new Vector2(0, 0);
     }
 }
+#endif

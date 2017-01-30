@@ -8,7 +8,7 @@ public enum HasSound
     No,
     Yes,
 }
-
+#if UNITY_EDITOR
 
 public class IdleNode : BaseInputNode {
 
@@ -131,3 +131,4 @@ public class IdleNode : BaseInputNode {
         }
     }
     }
+#endif

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class CameraSettings : MonoBehaviour {
 
@@ -21,6 +22,11 @@ public class CameraSettings : MonoBehaviour {
 
     [SerializeField]
     private GameObject _initialNode;
+
+    public CameraSettings()
+    {
+
+    }
 
     public void SetInitialCamera(GameObject _go)
     {

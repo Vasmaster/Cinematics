@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEditor;
 using UnityEngine.UI;
 
+#if UNITY_EDITOR
+
 public class SceneSetup : EditorWindow {
 
     public GameObject _gameManager;
@@ -113,3 +115,4 @@ public class SceneSetup : EditorWindow {
     }
 
 }
+#endif

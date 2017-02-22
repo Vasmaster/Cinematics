@@ -121,7 +121,8 @@ namespace JBooth.VertexPainterPro
             return;
          enforcedColorChannels = true;
          MeshFilter mf = GetComponent<MeshFilter>();
-         Color[] origColors = mf.sharedMesh.colors;
+            Color[] origColors = null;
+         //Color[] origColors = mf.sharedMesh.colors;
          if (stream != null && stream.colors.Length > 0 && (origColors == null || origColors.Length == 0))
          {
             // workaround for unity bug; dispite docs claim, color channels must exist on the original mesh
@@ -357,21 +358,21 @@ namespace JBooth.VertexPainterPro
                stream = new Mesh();
 
                // even though the docs say you don't need to set the positions on your avs, you do.. 
-               stream.vertices = new Vector3[mf.sharedMesh.vertexCount];
+               //stream.vertices = new Vector3[mf.sharedMesh.vertexCount];
 
                // wtf, copy won't work?
                // so, originally I did a copyTo here, but with a unity patch release the behavior changed and
                // the verticies would all become 0. This seems a funny thing to change in a patch release, but
                // since getting the data from the C++ side creates a new array anyway, we don't really need
                // to copy them anyway since they are a unique copy already.
-               stream.vertices = mf.sharedMesh.vertices;
+              // stream.vertices = mf.sharedMesh.vertices;
                // another Unity bug, when in editor, the paint job will just disapear sometimes. So we have to re-assign
                // it every update (even though this doesn't get called each frame, it appears to loose the data during
                // the editor update call, which only happens occationaly. 
-               stream.MarkDynamic();
-               stream.triangles = mf.sharedMesh.triangles;
+               //stream.MarkDynamic();
+               //stream.triangles = mf.sharedMesh.triangles;
                #if UNITY_EDITOR
-               meshStream = stream;
+               //meshStream = stream;
                #endif
 
                stream.hideFlags = HideFlags.HideAndDontSave;

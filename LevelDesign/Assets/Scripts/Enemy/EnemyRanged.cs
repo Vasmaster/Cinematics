@@ -14,10 +14,11 @@ public class EnemyRanged : MonoBehaviour {
 	private bool _attack;
 	private bool _patrol;
 	private bool _inRange;
+    private SoundTriggers _soundTriggers;
 
 	private GameObject _target;
 	private GameObject _projectile;
-	private GameInteraction _myInterface;
+	private CombatSystem.GameInteraction _myInterface;
 
 	private float _coolDown;
 	private Vector3 _newPosition;
@@ -47,7 +48,7 @@ public class EnemyRanged : MonoBehaviour {
 	public float _AOEDamage;
 	private EnemyAOE _enemyAOE;
 
-    
+    public ParticleSystem _earthQuake;
 
     private Vector3 _wayPointTarget;
 	private Vector3 _moveDirection;
@@ -73,9 +74,12 @@ public class EnemyRanged : MonoBehaviour {
 		_attack = false;
 		_patrol = true;
 		_coolDown = _enemyAttackRate;
-		_myInterface = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<GameInteraction> ();
+		_myInterface = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<CombatSystem.GameInteraction> ();
 		_enemyAOE = GetComponentInChildren<EnemyAOE> ();
         _playOnce = false;
+
+        _soundTriggers = GetComponent<SoundTriggers>();
+
 	}
 	
 	// Update is called once per frame
@@ -93,11 +97,10 @@ public class EnemyRanged : MonoBehaviour {
 
         if ((int)_enemyHealth <= 0)
         {
-
+            _attack = false;
             enemyDeath();
+            CombatSystem.Combat.OutofCombat();
         }
-
-
 
     }
 
@@ -106,16 +109,18 @@ public class EnemyRanged : MonoBehaviour {
 
 		if (coll.tag == "PlayerRangedSpell") {
 			
-			float _dmgDealt = coll.GetComponent<playerSpell> ().ReturnDamage ();
+			float _dmgDealt = coll.GetComponent<SpellObject> ().ReturnDamage ();
 			_enemyHealth -= _dmgDealt;
-
-			_myInterface.SetEnemyHealth (_enemyHealth);
+            if (_enemyHealth > 0)
+            {
+                _myInterface.SetEnemyHealth(_enemyHealth);
+            }
 			Destroy (coll.gameObject);
 
             _gotHit.Play();
 
             
-            Debug.Log(coll.gameObject.transform.GetChild(0).name);
+            //Debug.Log(coll.gameObject.transform.GetChild(0).name);
 
         }
 
@@ -188,7 +193,7 @@ public class EnemyRanged : MonoBehaviour {
 			transform.position = Vector3.MoveTowards (transform.position, transform.position, _moveToEnemySpeed * Time.deltaTime);
 
 			_enemyAOE.SetInAOERange (true);
-			_enemyAOE.DoAOE (_AOEType.ToString (), _AOEDamage, _AOECooldown, _repeatHellBlast);
+			_enemyAOE.DoAOE (_AOEType.ToString (), _AOEDamage, _AOECooldown, _repeatHellBlast, _earthQuake);
 			_inRange = false;
 
 		}
@@ -214,7 +219,7 @@ public class EnemyRanged : MonoBehaviour {
 
 				GameObject _projectile = Instantiate (_rangedSpell_1, transform.position, Quaternion.identity) as GameObject;
 				_projectile.name = "enemySpellAttack";
-				_projectile.GetComponent<spellCast> ().SetDamage (_rangedDamage);
+				_projectile.GetComponent<SpellObject>().SetDamage (_rangedDamage);
 				_projectile.GetComponent<Rigidbody> ().AddForce (_playerAimVector * _enemyAttackSpeed);
 				_coolDown = 0;
 
@@ -276,14 +281,17 @@ public class EnemyRanged : MonoBehaviour {
 	void enemyDeath() {
         if(!_playOnce) {
             _death.Play();
-
+            _soundTriggers.EnemyDeath();
             _myInterface.EnemyDeath();
             _playOnce = true;
         }
 
         if (!_death.IsAlive())
         {
-            Debug.Log("lkdjfdfdlf");
+            CombatSystem.AnimationSystem.SetPlayerIdle();
+            CombatSystem.Combat.OutofCombat();
+            CombatSystem.GameInteraction.SetSelectedUI(null);
+            Debug.Log("Enemy dead");
             Destroy(this.gameObject);
         }
 

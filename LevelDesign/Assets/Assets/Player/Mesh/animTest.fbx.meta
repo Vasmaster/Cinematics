@@ -1750,28 +1750,6 @@ ModelImporter:
         weight: 1
       - path: CTRL_MASTER
         weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis
-        weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis/CTRL_Spine_1
-        weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis/CTRL_Spine_1/CTRL_Spine_2
-        weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis/CTRL_Spine_1/CTRL_Spine_2/CTRL_Spine_3
-        weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis/CTRL_Spine_1/CTRL_Spine_2/CTRL_Spine_3/CTRL_Spine_4
-        weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis/CTRL_Spine_1/CTRL_Spine_2/CTRL_Spine_3/CTRL_Spine_4/L_CTRL_SHOULDER_1
-        weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis/CTRL_Spine_1/CTRL_Spine_2/CTRL_Spine_3/CTRL_Spine_4/L_CTRL_SHOULDER_1/L_Shoulder_1
-        weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis/CTRL_Spine_1/CTRL_Spine_2/CTRL_Spine_3/CTRL_Spine_4/L_CTRL_SHOULDER_1/L_Shoulder_1/L_Shoulder_2
-        weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis/CTRL_Spine_1/CTRL_Spine_2/CTRL_Spine_3/CTRL_Spine_4/R_CTRL_SHOULDER_1
-        weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis/CTRL_Spine_1/CTRL_Spine_2/CTRL_Spine_3/CTRL_Spine_4/R_CTRL_SHOULDER_1/R_Shoulder_1
-        weight: 1
-      - path: CTRL_MASTER/CTRL_Pelvis/CTRL_Spine_1/CTRL_Spine_2/CTRL_Spine_3/CTRL_Spine_4/R_CTRL_SHOULDER_1/R_Shoulder_1/R_Shoulder_2
-        weight: 1
       - path: CTRL_MASTER/CTRL_STAFF_1
         weight: 1
       - path: CTRL_MASTER/CTRL_STAFF_1/Staff_1
@@ -1863,6 +1841,10 @@ ModelImporter:
       - path: ROOT/Spine_1/Spine_2/Chest/L_Clavicle_1
         weight: 1
       - path: ROOT/Spine_1/Spine_2/Chest/L_Clavicle_1/L_Clavicle_2
+        weight: 1
+      - path: ROOT/Spine_1/Spine_2/Chest/L_Clavicle_1/L_Clavicle_2/L_Shoulder_1
+        weight: 1
+      - path: ROOT/Spine_1/Spine_2/Chest/L_Clavicle_1/L_Clavicle_2/L_Shoulder_1/L_Shoulder_2
         weight: 1
       - path: ROOT/Spine_1/Spine_2/Chest/L_Clavicle_1/L_Clavicle_2/L_UpperArm
         weight: 1
@@ -2195,6 +2177,10 @@ ModelImporter:
       - path: ROOT/Spine_1/Spine_2/Chest/R_Clavicle_1
         weight: 1
       - path: ROOT/Spine_1/Spine_2/Chest/R_Clavicle_1/R_Clavicle_2
+        weight: 1
+      - path: ROOT/Spine_1/Spine_2/Chest/R_Clavicle_1/R_Clavicle_2/R_Shoulder_1
+        weight: 1
+      - path: ROOT/Spine_1/Spine_2/Chest/R_Clavicle_1/R_Clavicle_2/R_Shoulder_1/R_Shoulder_2
         weight: 1
       - path: ROOT/Spine_1/Spine_2/Chest/R_Clavicle_1/R_Clavicle_2/R_UpperArm
         weight: 1
@@ -5212,6 +5198,7 @@ ModelImporter:
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton: []
     armTwist: 0.5
@@ -5222,7 +5209,10 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: CTRL_MASTER
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
   humanoidOversampling: 1

@@ -56,7 +56,7 @@ public class EnemyAOE : MonoBehaviour {
 
 	}
 
-	public void DoAOE(string _AOEType, float _damage, float _nwCooldown, bool _repeatHellBlast) {
+	public void DoAOE(string _AOEType, float _damage, float _nwCooldown, bool _repeatHellBlast, ParticleSystem _particles) {
 		
 		if (_AOEType == "HellBlast") {
 			_type = _AOEType;
@@ -69,6 +69,7 @@ public class EnemyAOE : MonoBehaviour {
 			_cooldown = _nwCooldown;
 			_damageDone = _damage;
 			DoEarthQuake ();
+            _particles.Play();
 		}
 
 	}
@@ -76,8 +77,7 @@ public class EnemyAOE : MonoBehaviour {
 	void DoHellBlast() {
 
 		GetComponent<Animator> ().Play ("Anim_HellBlast");
-
-
+        
 	}
 
 	void DoEarthQuake() {

@@ -2,9 +2,7 @@
 using System.Collections;
 
 public class playerSpellCast : MonoBehaviour {
-
-
-
+    
 	private GameObject _projectile;
 
 	// Use this for initialization
@@ -20,8 +18,8 @@ public class playerSpellCast : MonoBehaviour {
 		
         if(_nwSelectedTarget != null) { 
         
-		Vector3 _playerAimVector = _nwSelectedTarget.transform.position - _position;
-		_projectile = Instantiate(_prefab, _position, Quaternion.identity) as GameObject;
+		    Vector3 _playerAimVector = _nwSelectedTarget.transform.position - _position;
+		    _projectile = Instantiate(_prefab, _position, Quaternion.identity) as GameObject;
             _projectile.transform.LookAt(_nwSelectedTarget.transform);    
 			_projectile.GetComponent<Rigidbody> ().AddForce (_playerAimVector * _velocity);
 			_projectile.AddComponent<playerSpell> ();

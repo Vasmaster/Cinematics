@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: a87368b2163f3284ebe80bdc1c87a1aa
-timeCreated: 1475172883
+timeCreated: 1486228022
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -266,13 +266,13 @@ SubstanceImporter:
       wrapMode: 0
     textureAssignments:
     - shaderProp:
-        name: _MainTex
-      material: {instanceID: 0}
-      baseUID: 3818861338
-    - shaderProp:
         name: _BumpMap
       material: {instanceID: 0}
       baseUID: 3818861336
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 3818861338
     - shaderProp:
         name: _MetallicGlossMap
       material: {instanceID: 0}

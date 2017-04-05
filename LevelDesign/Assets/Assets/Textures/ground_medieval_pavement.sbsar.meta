@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 7077bc1fa7b3c074eb9b4132159119d9
-timeCreated: 1480771386
+timeCreated: 1486228335
 licenseType: Free
 SubstanceImporter:
   serializedVersion: 5
@@ -10,7 +10,7 @@ SubstanceImporter:
     prototypeName: ground_medieval_pavement
     shaderName: 
     shader: {fileID: 4800000, guid: 654ea01408a3f48178c0091b03ba1f0f, type: 3}
-    shaderKeywords: _METALLICGLOSSMAP _NORMALMAP _PARALLAXMAP _SNOW
+    shaderKeywords: GEOM_TYPE_MESH _METALLICGLOSSMAP _NORMALMAP _PARALLAXMAP
     renderQueue: -1
     lightmapFlags: 5
     inputs:
@@ -138,10 +138,10 @@ SubstanceImporter:
         second: 1
       - first:
           name: _Cull
-        second: 2
+        second: 0
       - first:
           name: _CullShadowPass
-        second: 3
+        second: 0
       - first:
           name: _Cutoff
         second: 0.5
@@ -189,7 +189,7 @@ SubstanceImporter:
         second: 0
       - first:
           name: _LinearSteps
-        second: 20
+        second: 4
       - first:
           name: _Lux_FlowInterval
         second: 1
@@ -225,13 +225,13 @@ SubstanceImporter:
         second: 0.005
       - first:
           name: _ParallaxTiling
-        second: 1
+        second: 2
       - first:
           name: _PuddleMask
-        second: 0
+        second: 1
       - first:
           name: _PuddleMaskTiling
-        second: 1
+        second: 2
       - first:
           name: _ScatteringPower
         second: 4
@@ -243,7 +243,7 @@ SubstanceImporter:
         second: 0
       - first:
           name: _Snow
-        second: 1
+        second: 0
       - first:
           name: _SnowDetailStrength
         second: 1
@@ -255,7 +255,7 @@ SubstanceImporter:
         second: 1
       - first:
           name: _SnowSlopeDamp
-        second: 0.601
+        second: 1.147
       - first:
           name: _SpecularHighlights
         second: 1
@@ -282,7 +282,7 @@ SubstanceImporter:
         second: 0
       - first:
           name: _WaterSlopeDamp
-        second: 0
+        second: 0.44
       - first:
           name: _Wetness
         second: 0
@@ -307,7 +307,7 @@ SubstanceImporter:
         second: {r: 0, g: 0, b: 0, a: 1}
       - first:
           name: _SnowAccumulation
-        second: {r: 0.47, g: 0, b: 0, a: 0}
+        second: {r: 0.59, g: 0, b: 0, a: 0}
       - first:
           name: _SnowDetailTiling
         second: {r: 1, g: 1, b: 0, a: 0}
@@ -322,7 +322,7 @@ SubstanceImporter:
         second: {r: 0.5, g: 0.5, b: 0.5, a: 1}
       - first:
           name: _WaterAccumulationCracksPuddles
-        second: {r: 1.32, g: 0, b: 1.8, a: 1}
+        second: {r: 1.27, g: 0, b: 1.318, a: 0}
       - first:
           name: _WaterAccumulationCracksPuddles2
         second: {r: 0, g: 1, b: 0, a: 1}
@@ -380,13 +380,13 @@ SubstanceImporter:
       wrapMode: 0
     textureAssignments:
     - shaderProp:
-        name: _MainTex
-      material: {instanceID: 0}
-      baseUID: 3114307531
-    - shaderProp:
         name: _BumpMap
       material: {instanceID: 0}
       baseUID: 3114307537
+    - shaderProp:
+        name: _MainTex
+      material: {instanceID: 0}
+      baseUID: 3114307531
     - shaderProp:
         name: _MetallicGlossMap
       material: {instanceID: 0}

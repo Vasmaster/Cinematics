@@ -78,7 +78,7 @@ public class EnemyMelee : MonoBehaviour {
 	public Transform[] _wayPoints;
 
 
-	private GameInteraction _myInterface;
+	private CombatSystem.GameInteraction _myInterface;
 
 	// Use this for initialization
 	void Start () {
@@ -89,7 +89,7 @@ public class EnemyMelee : MonoBehaviour {
 		_timer = _rangedCooldown;
 		_attackTimer = _attackRate;
 		_hellStrikeTimer = _hellStrikeCoolDown - _globalCoolDown;
-		_myInterface = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<GameInteraction> ();
+		_myInterface = GameObject.FindGameObjectWithTag ("GameManager").GetComponent<CombatSystem.GameInteraction> ();
 	}
 	
 	// Update is called once per frame
@@ -261,13 +261,13 @@ public class EnemyMelee : MonoBehaviour {
             if(Vector3.Distance(_enemyHook.transform.position, _hookTarget) > float.Epsilon)
             {
                 _enemyHook.transform.position = Vector3.MoveTowards(_enemyHook.transform.position, _hookTarget, _hookSpeed / 10);
-                _nwTarget.GetComponent<Player>().HookPlayer(_enemyHook);
+                _nwTarget.GetComponent<CombatSystem.Player>().HookPlayer(_enemyHook);
             }
 
             if(Vector3.Distance(_enemyHook.transform.position, _hookTarget) < 0.1f)
             {
                 _attack = true;
-                _nwTarget.GetComponent<Player>().UnHook(this.gameObject);
+                _nwTarget.GetComponent<CombatSystem.Player>().UnHook(this.gameObject);
                 _enemyHook.active = false;
             }
 
